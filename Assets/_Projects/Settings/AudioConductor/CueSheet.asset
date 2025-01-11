@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a2a166b4c2c548b991995a3cb1b2885, type: 3}
+  m_Name: CueSheet
+  m_EditorClassIdentifier: 
+  cueSheet:
+    id: 02399f70-dfad-42aa-be1f-135208ff6c94
+    name: BGMSE
+    throttleType: 0
+    throttleLimit: 0
+    volume: 1
+    pitch: 1
+    pitchInvert: 0
+    cueList:
+    - id: e0e8059f-0076-4903-8df1-530d112ab82e
+      colorId: 
+      name: BGM
+      categoryId: 2132857741
+      throttleType: 0
+      throttleLimit: 0
+      volume: 1
+      volumeRange: 0
+      pitch: 1
+      pitchRange: 0
+      pitchInvert: 0
+      playType: 0
+      trackList:
+      - id: 662ba0d8-302c-4e6c-b350-36f547c09af8
+        colorId: 
+        name: bgm1
+        audioClip: {fileID: 8300000, guid: b927558dc05cb6849a21fa2d1f778042, type: 3}
+        volume: 0.33
+        volumeRange: 0
+        pitch: 1
+        pitchRange: 0
+        pitchInvert: 0
+        startSample: 0
+        endSample: 7933824
+        loopStartSample: 0
+        isLoop: 1
+        randomWeight: 0
+        priority: 0
+        fadeTime: 0
+    - id: 8906cb0c-4a05-4c43-9f3f-3837cbb63c6c
+      colorId: 
+      name: SE
+      categoryId: 96182140
+      throttleType: 0
+      throttleLimit: 0
+      volume: 1
+      volumeRange: 0
+      pitch: 1
+      pitchRange: 0
+      pitchInvert: 0
+      playType: 0
+      trackList:
+      - id: 65e79196-24f0-4f5f-91a7-11aeaea753d3
+        colorId: 
+        name: se1
+        audioClip: {fileID: 8300000, guid: 56ccf3e5317ef89418239de8c5ad8e80, type: 3}
+        volume: 1
+        volumeRange: 0
+        pitch: 1
+        pitchRange: 0
+        pitchInvert: 0
+        startSample: 0
+        endSample: 5354
+        loopStartSample: 0
+        isLoop: 0
+        randomWeight: 0
+        priority: 0
+        fadeTime: 0
+      - id: def1d2dc-5302-400e-ba71-0a0c453dfe80
+        colorId: 
+        name: se2
+        audioClip: {fileID: 8300000, guid: c5eea9f304cafd1479e75a223e36ba6d, type: 3}
+        volume: 1
+        volumeRange: 0
+        pitch: 1
+        pitchRange: 0
+        pitchInvert: 0
+        startSample: 0
+        endSample: 91008
+        loopStartSample: 0
+        isLoop: 0
+        randomWeight: 0
+        priority: 0
+        fadeTime: 0

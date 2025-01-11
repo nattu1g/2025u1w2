@@ -1,0 +1,23 @@
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+
+#ROOTNAMESPACEBEGIN#
+    public class #SCRIPTNAME# : LifetimeScope
+    {
+        [SerializeField] private int _num;
+
+        protected override void Configure(IContainerBuilder builder)
+        {
+            // ピュアC#
+            //builder.Register<TestEntity>(Lifetime.Singleton);
+            // ヒエラルキー上のコンポーネント
+            //builder.RegisterComponentInHierarchy<BattleComponentAssembly>();
+            // Serializeしたコンポーネント
+            //builder.RegisterComponent(_num);
+            // 起点のとなるエントリーポイント
+            //builder.RegisterEntryPoint<BattlePresenter>();
+            #NOTRIM#
+        }
+    }
+#ROOTNAMESPACEEND#

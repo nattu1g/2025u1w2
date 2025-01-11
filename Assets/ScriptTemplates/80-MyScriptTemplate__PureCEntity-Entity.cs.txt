@@ -1,0 +1,27 @@
+using Cysharp.Threading.Tasks;
+using System;
+using R3;
+using UnityEngine;
+using UnityEngine.Audio;
+
+#ROOTNAMESPACEBEGIN#
+namespace Scripts.Vcontainer.Entity
+{
+    public class #SCRIPTNAME# : IDisposable
+    {
+        private ReactiveProperty<float> _xxx = new(0);
+        public Observable<float> Xxx => _xxx;
+
+        public float XxxValue => _xxx.Value;
+
+        public readonly float zzz = 1;
+
+        private const int yyy = 10;
+
+        public void Dispose()
+        {
+        }
+    }
+}
+#ROOTNAMESPACEEND#
+

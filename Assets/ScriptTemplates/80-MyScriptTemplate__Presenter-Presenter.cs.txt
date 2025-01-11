@@ -1,0 +1,24 @@
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+
+#ROOTNAMESPACEBEGIN#
+
+    public class #SCRIPTNAME# : ITickable
+    {
+        readonly PlayerInput _playerInput;
+
+        public #SCRIPTNAME#(
+            PlayerInput playerInput
+            )
+        {
+            _playerInput = playerInput;
+        }
+
+        public void Tick()
+        {
+            Debug.Log("[#SCRIPTNAME#][Tick] ");
+        }
+
+    }
+#ROOTNAMESPACEEND#
