@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d01826bcb29a97e49bf3d290a3c82b0c
+timeCreated: 1522572877
+licenseType: Store
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 115598
+  packageName: Lebug.Log
+  packageVersion: 1.1.0
+  assetPath: Assets/Lebug/Demo/LebugDemoScene.unity
+  uploadId: 499057

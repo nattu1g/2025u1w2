@@ -1,7 +1,7 @@
 {
     "items": [
         {
-            "Name": "TESTS",
+            "Name": "SETTING",
             "TextColor": {
                 "r": 1.0,
                 "g": 1.0,
@@ -10,9 +10,9 @@
             },
             "IsGradientBackground": false,
             "BackgroundColor": {
-                "r": 0.9528301954269409,
-                "g": 0.4539426863193512,
-                "b": 0.4539426863193512,
+                "r": 0.0,
+                "g": 0.5104327201843262,
+                "b": 1.0,
                 "a": 1.0
             },
             "BackgroundGradient": {
@@ -87,9 +87,9 @@
                 "m_NumAlphaKeys": 2
             },
             "FontSize": 12,
-            "FontStyle": 0,
+            "FontStyle": 1,
             "TextAnchor": 4,
-            "ImageType": 0
+            "ImageType": 14
         }
     ]
 }
