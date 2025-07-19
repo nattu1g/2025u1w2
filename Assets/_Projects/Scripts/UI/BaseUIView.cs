@@ -14,10 +14,10 @@ namespace Scripts.UI
         [SerializeField] private CanvasGroup _uiBackground;
         public CanvasGroup UiBackground => _uiBackground;
         [LabelText("表示ボタン")]
-        [SerializeField] private CustomButton _optionShowButton;
-        public CustomButton OptionShowButton => _optionShowButton;
+        [SerializeField] private CustomButton _showButton;
+        public CustomButton ShowButton => _showButton;
         [LabelText("非表示ボタン")]
-        [SerializeField] private CustomButton _optionHideButton;
-        public CustomButton OptionHideButton => _optionHideButton;
+        [SerializeField] private CustomButton _hideButton;
+        public CustomButton HideButton => _hideButton;
     }
 }

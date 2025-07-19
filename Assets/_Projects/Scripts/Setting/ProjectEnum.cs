@@ -7,4 +7,10 @@ namespace Scripts.Setting
         BGM,
         SE,
     }
+    public enum ClassType
+    {
+        Warrior,
+        Archer,
+        Wizard,
+    }
 }
