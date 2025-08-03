@@ -12,6 +12,11 @@ namespace Scripts.UI
         [SerializeField] private OptionView _optionView;
         public OptionView OptionView => _optionView;
 
+        [Title("メッセージ")]
+        [LabelText("画面本体")]
+        [SerializeField] private MessageView _messageView;
+        public MessageView MessageView => _messageView;
+
 
 
         // public override void Initialize()

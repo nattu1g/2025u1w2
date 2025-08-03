@@ -29,19 +29,28 @@ namespace Scripts.UI
             // GameObject が既にアクティブの場合は何もしない
             if (uiView.UiBase.gameObject.activeSelf) return;
 
-            uiView.UiBackground.gameObject.SetActive(true);
+            // Action to show the main UI content
+            System.Action showUiContent = () =>
+            {
+                uiView.UiBase.gameObject.SetActive(true);
+                LMotion.Create(_scaleFrom, _scaleTowards, _duration)
+                    .WithEase(_ease)
+                    .BindToLocalScaleXY(uiView.UiBase.gameObject.GetComponent<RectTransform>())
+                    .AddTo(uiView.UiBase.gameObject);
+            };
 
-            LMotion.Create(_alphaFrom, _alphaTowards, _duration)
-                .WithOnComplete(() =>
-                {
-                    uiView.UiBase.gameObject.SetActive(true);
-                    LMotion.Create(_scaleFrom, _scaleTowards, _duration)
-                        .WithEase(_ease)
-                        .BindToLocalScaleXY(uiView.UiBase.gameObject.GetComponent<RectTransform>())
-                        .AddTo(uiView.UiBase.gameObject);
-                })
-                .Bind(x => uiView.UiBackground.gameObject.GetComponent<CanvasGroup>().alpha = x)
-                .AddTo(uiView.UiBase.gameObject);
+            if (uiView.UiBackground != null)
+            {
+                uiView.UiBackground.gameObject.SetActive(true);
+                LMotion.Create(_alphaFrom, _alphaTowards, _duration)
+                    .WithOnComplete(showUiContent)
+                    .Bind(x => uiView.UiBackground.gameObject.GetComponent<CanvasGroup>().alpha = x)
+                    .AddTo(uiView.UiBase.gameObject);
+            }
+            else
+            {
+                showUiContent();
+            }
         }
 
         public virtual void Hide(BaseUIView uiView)
@@ -53,19 +62,21 @@ namespace Scripts.UI
                 .WithOnComplete(() =>
                 {
                     uiView.UiBase.gameObject.SetActive(false);
-                    LMotion.Create(_alphaTowards, _alphaFrom, _duration)
-                        .WithEase(_ease)
-                        .WithOnComplete(() =>
-                        {
-                            uiView.UiBackground.gameObject.SetActive(false);
-                        })
-                        .Bind(x => uiView.UiBackground.gameObject.GetComponent<CanvasGroup>().alpha = x)
-                        .AddTo(uiView.UiBase.gameObject);
+
+                    if (uiView.UiBackground != null)
+                    {
+                        LMotion.Create(_alphaTowards, _alphaFrom, _duration)
+                            .WithEase(_ease)
+                            .WithOnComplete(() =>
+                            {
+                                uiView.UiBackground.gameObject.SetActive(false);
+                            })
+                            .Bind(x => uiView.UiBackground.gameObject.GetComponent<CanvasGroup>().alpha = x)
+                            .AddTo(uiView.UiBase.gameObject);
+                    }
                 })
                 .BindToLocalScaleXY(uiView.UiBase.gameObject.GetComponent<RectTransform>())
                 .AddTo(uiView.UiBase.gameObject);
-
-
         }
     }
 }

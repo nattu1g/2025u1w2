@@ -164,6 +164,8 @@ namespace Scripts.Message
 
         public void CloseMessageWindow()
         {
+            if (!_messageWindow.activeSelf) return;
+
             _messageWindow.SetActive(false);
 
             // メッセージウィンドウを非表示にする

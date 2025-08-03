@@ -1,5 +1,11 @@
+using Alchemy.Inspector;
+using MessagePipe;
+using Scripts.Component;
 using Scripts.UI;
+using Scripts.Vcontainer.Entity;
+using Scripts.Vcontainer.Handler;
 using Scripts.Vcontainer.Presenter;
+using Scripts.Vcontainer.UseCase;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -8,16 +14,37 @@ namespace Scripts.Vcontainer.Installer
 {
     public class MainLifeTimeScope : LifetimeScope
     {
+        [Title("LIFETIME")]
+        [LabelText("UICanvas")]
         [SerializeField] private UICanvas _uiCanvas;
+        [LabelText("PlayerInputObject")]
+        [SerializeField] private InputBall _inputBall;
+
 
         protected override void Configure(IContainerBuilder builder)
         {
-            // ピュアC#
-            //builder.Register<TestEntity>(Lifetime.Singleton);
+            // PubSub
+            builder.RegisterMessagePipe();
+            // Handler
+            builder.Register<SaveLoadHandler>(Lifetime.Singleton);
+            builder.Register<AudioHandler>(Lifetime.Singleton);
+            builder.Register<ButtonHandler>(Lifetime.Singleton);
+            builder.Register<GameInitializationHandler>(Lifetime.Singleton);
+            // UseCase
+            builder.Register<AudioUseCase>(Lifetime.Singleton);
+            builder.Register<LoadUseCase>(Lifetime.Singleton);
+            builder.Register<SaveUseCase>(Lifetime.Singleton);
+            builder.Register<MessageUseCase>(Lifetime.Singleton);
+
+            // Entity
+            builder.Register<AudioEntity>(Lifetime.Singleton);
+            builder.Register<VolumeEntity>(Lifetime.Singleton);
             // ヒエラルキー上のコンポーネント
-            //builder.RegisterComponentInHierarchy<BattleComponentAssembly>();
+            builder.RegisterComponentInHierarchy<SaveManager>();
             // Serializeしたコンポーネント
             builder.RegisterComponent(_uiCanvas);
+            // MonoBehaviorでInjectしているスクリプトは直接指定する
+            builder.RegisterComponent(_inputBall);
             // 起点のとなるエントリーポイント
             builder.RegisterEntryPoint<MainPresenter>();
 

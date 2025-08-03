@@ -47,12 +47,12 @@ namespace Scripts
             // BGMの再生
             _buttonHandler.SetBgmUpButton(_audioUseCase.BgmUp, null);
             _buttonHandler.SetBgmDownButton(_audioUseCase.BgmDown, null);
-            _buttonHandler.SetSeUpButton(_audioUseCase.SeUp, () => _audioEntity.PlaySE("SmallClick"));
-            _buttonHandler.SetSeDownButton(_audioUseCase.SeDown, () => _audioEntity.PlaySE("SmallClick"));
+            _buttonHandler.SetSeUpButton(_audioUseCase.SeUp, () => _audioEntity.PlaySE("se1"));
+            _buttonHandler.SetSeDownButton(_audioUseCase.SeDown, () => _audioEntity.PlaySE("se1"));
 
             // オプションの開閉ボタン。もしオプション項目がたくさんあるなら、OptionHandlerを作成する
-            _buttonHandler.SetOptionOpenButton(() => _audioEntity.PlaySE("SmallClick"), null);
-            _buttonHandler.SetOptionCloseButton(() => _audioEntity.PlaySE("SmallClick"), _saveUseCase.SaveAppSettingsData);
+            _buttonHandler.SetOptionOpenButton(() => _audioEntity.PlaySE("se1"), null);
+            _buttonHandler.SetOptionCloseButton(() => _audioEntity.PlaySE("se1"), _saveUseCase.SaveAppSettingsData);
 
             // UI初期化
             await _audioUseCase.SetBgmText();

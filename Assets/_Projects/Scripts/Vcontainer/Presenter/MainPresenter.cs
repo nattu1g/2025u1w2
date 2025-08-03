@@ -6,14 +6,20 @@ using AudioConductor.Runtime.Core.Models;
 using Cysharp.Threading.Tasks;
 using GekinatuPackage.SaveJson.Data;
 using GekinatuPackage.SaveJson.Json;
+using MessagePipe;
 using Scripts.Component;
 using Scripts.Mono;
 using Scripts.Setting;
 using Scripts.UI;
 using Scripts.Vcontainer.Entity;
 using Scripts.Vcontainer.Handler;
+using Scripts.Vcontainer.UseCase;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer.Unity;
+using ReactiveInputSystem;
+using System.Threading;
+using R3;
 
 namespace Scripts.Vcontainer.Presenter
 {
@@ -27,11 +33,25 @@ namespace Scripts.Vcontainer.Presenter
         readonly AudioConductorSettings _audioConductorSettings;
         readonly CueSheetAsset _cueSheetAsset;
 
+        // PubSub
+        readonly IPublisher<int> _publisher;
+        readonly ISubscriber<int> _subscriber;
+        readonly IPublisher<MessageEvent> _messagePublisher;
+
+
+
         // MainLifetimeScopeで登録されたコンポーネント
         readonly UICanvas _uiCanvas;
         readonly GameInitializationHandler _gameInitHandler;
         readonly AudioHandler _audioHandler;
         readonly SaveLoadHandler _saveLoadHandler;
+        readonly ButtonHandler _buttonHandler;
+        readonly AudioUseCase _audioUseCase;
+        readonly SaveUseCase _saveUseCase;
+        readonly LoadUseCase _loadUseCase;
+        readonly MessageUseCase _messageUseCase;
+
+
 
         public MainPresenter(
             ComponentAssembly componentAssembly,
@@ -39,10 +59,18 @@ namespace Scripts.Vcontainer.Presenter
             AudioEntity audioEntity,
             AudioConductorSettings audioConductorSettings,
             CueSheetAsset cueSheetAsset,
+            IPublisher<int> publisher,
+            ISubscriber<int> subscriber,
+            IPublisher<MessageEvent> messagePublisher,
             UICanvas uiCanvas,
             GameInitializationHandler gameInitHandler,
             AudioHandler audioHandler,
-            SaveLoadHandler saveLoadHandler
+            SaveLoadHandler saveLoadHandler,
+            ButtonHandler buttonHandler,
+            AudioUseCase audioUseCase,
+            SaveUseCase saveUseCase,
+            LoadUseCase loadUseCase,
+            MessageUseCase messageUseCase
             )
         {
             _componentAssembly = componentAssembly;
@@ -50,14 +78,34 @@ namespace Scripts.Vcontainer.Presenter
             _audioEntity = audioEntity;
             _audioConductorSettings = audioConductorSettings;
             _cueSheetAsset = cueSheetAsset;
+            _publisher = publisher;
+            _subscriber = subscriber;
+            _messagePublisher = messagePublisher;
             _uiCanvas = uiCanvas;
             _gameInitHandler = gameInitHandler;
             _audioHandler = audioHandler;
             _saveLoadHandler = saveLoadHandler;
+            _buttonHandler = buttonHandler;
+            _audioUseCase = audioUseCase;
+            _saveUseCase = saveUseCase;
+            _loadUseCase = loadUseCase;
+            _messageUseCase = messageUseCase;
         }
-
+        InputAction inputAction;
+        CancellationToken cancellationToken;
         public async void Initialize()
         {
+            inputAction = new InputAction();
+            cancellationToken = new CancellationToken();
+
+            inputAction.StartedAsObservable(cancellationToken)
+                .Subscribe(x => Debug.Log("Started"));
+
+
+            // inputAction.PerformedAsObservable(cancellationToken)
+            //     .Subscribe(x => Debug.Log("Performed" + x));
+            // inputAction.CanceledAsObservable(cancellationToken)
+            //     .Subscribe(x => Debug.Log("Canceled"));
             Debug.Log("Application.persistentDataPath:" + Application.persistentDataPath);
 
             await _saveLoadHandler.LoadAllFile();
@@ -72,14 +120,44 @@ namespace Scripts.Vcontainer.Presenter
             // _studentDetailHandler.Initialize();
 
             await _audioEntity.PlayBGM("MainBGM");
+
+            // Sub Example
+            _subscriber.Subscribe((num) =>
+            {
+                Debug.Log("[MainPresenter] random num" + num);
+            });
+
+            _messageUseCase.Initialize(); // 本当はここでしたくない。Handlerとかでまとめてしたいけどテスト的に
         }
 
         public void Tick()
         {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
+            // Pub Example
+            // if (Input.GetKeyDown(KeyCode.A))
+            // {
+            //     _publisher.Publish(Random.Range(10, 200));
+            // }
 
-            }
+            // if (Input.GetKeyDown(KeyCode.Q))
+            // {
+            //     Debug.Log("Qキーが押されました");
+            //     _messagePublisher.Publish(new MessageEvent("Qキーが押されました", false, false));
+            // }
+            // if (Input.GetKeyDown(KeyCode.W))
+            // {
+            //     Debug.Log("Wキーが押されました");
+            //     _messagePublisher.Publish(new MessageEvent("Wキーが押されましたｆだｆだｓｇｇｇｇｇｇｇｇｇ", false, true));
+            // }
+            // if (Input.GetKeyDown(KeyCode.E))
+            // {
+            //     Debug.Log("Eキーが押されました");
+            //     _messagePublisher.Publish(new MessageEvent("Eキーが押されたんですけどおおおお", true, false));
+            // }
+            // if (Input.GetKeyDown(KeyCode.R))
+            // {
+            //     Debug.Log("Rキーが押されました");
+            //     _messagePublisher.Publish(new MessageEvent("Rキーが押", true, true));
+            // }
         }
     }
 }
