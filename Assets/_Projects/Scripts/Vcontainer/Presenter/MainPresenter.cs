@@ -7,8 +7,8 @@ using Cysharp.Threading.Tasks;
 using GekinatuPackage.SaveJson.Data;
 using GekinatuPackage.SaveJson.Json;
 using MessagePipe;
-using Scripts.Component;
-using Scripts.Mono;
+using Scripts.Features.Save;
+using Scripts.Features;
 using Scripts.Setting;
 using Scripts.UI;
 using Scripts.Vcontainer.Entity;
@@ -20,6 +20,7 @@ using VContainer.Unity;
 using ReactiveInputSystem;
 using System.Threading;
 using R3;
+using Scripts.UI.Core;
 
 namespace Scripts.Vcontainer.Presenter
 {
@@ -42,10 +43,14 @@ namespace Scripts.Vcontainer.Presenter
 
         // MainLifetimeScopeで登録されたコンポーネント
         readonly UICanvas _uiCanvas;
+        // Handler
         readonly GameInitializationHandler _gameInitHandler;
         readonly AudioHandler _audioHandler;
         readonly SaveLoadHandler _saveLoadHandler;
         readonly ButtonHandler _buttonHandler;
+        readonly PlayerClubHandler _playerClubHandler;
+        readonly TrainingSelectHandler _trainingSelectHandler;
+        // UseCase
         readonly AudioUseCase _audioUseCase;
         readonly SaveUseCase _saveUseCase;
         readonly LoadUseCase _loadUseCase;
@@ -64,6 +69,8 @@ namespace Scripts.Vcontainer.Presenter
             IPublisher<MessageEvent> messagePublisher,
             UICanvas uiCanvas,
             GameInitializationHandler gameInitHandler,
+            PlayerClubHandler playerClubHandler,
+            TrainingSelectHandler trainingSelectHandler,
             AudioHandler audioHandler,
             SaveLoadHandler saveLoadHandler,
             ButtonHandler buttonHandler,
@@ -83,6 +90,8 @@ namespace Scripts.Vcontainer.Presenter
             _messagePublisher = messagePublisher;
             _uiCanvas = uiCanvas;
             _gameInitHandler = gameInitHandler;
+            _playerClubHandler = playerClubHandler;
+            _trainingSelectHandler = trainingSelectHandler;
             _audioHandler = audioHandler;
             _saveLoadHandler = saveLoadHandler;
             _buttonHandler = buttonHandler;
@@ -91,15 +100,15 @@ namespace Scripts.Vcontainer.Presenter
             _loadUseCase = loadUseCase;
             _messageUseCase = messageUseCase;
         }
-        InputAction inputAction;
-        CancellationToken cancellationToken;
+        // InputAction inputAction;
+        // CancellationToken cancellationToken;
         public async void Initialize()
         {
-            inputAction = new InputAction();
-            cancellationToken = new CancellationToken();
+            // inputAction = new InputAction();
+            // cancellationToken = new CancellationToken();
 
-            inputAction.StartedAsObservable(cancellationToken)
-                .Subscribe(x => Debug.Log("Started"));
+            // inputAction.StartedAsObservable(cancellationToken)
+            //     .Subscribe(x => Debug.Log("Started"));
 
 
             // inputAction.PerformedAsObservable(cancellationToken)
@@ -113,6 +122,11 @@ namespace Scripts.Vcontainer.Presenter
             await _audioHandler.Initialize();
             _gameInitHandler.Initialize();
 
+            _playerClubHandler.Initialize();
+            _trainingSelectHandler.Initialize();
+
+
+
             // 一覧リストの登録
             // _listParentHandler.Initialize();
             // _studentListHandler.Initialize();
@@ -122,12 +136,12 @@ namespace Scripts.Vcontainer.Presenter
             await _audioEntity.PlayBGM("MainBGM");
 
             // Sub Example
-            _subscriber.Subscribe((num) =>
-            {
-                Debug.Log("[MainPresenter] random num" + num);
-            });
+            // _subscriber.Subscribe((num) =>
+            // {
+            //     Debug.Log("[MainPresenter] random num" + num);
+            // });
 
-            _messageUseCase.Initialize(); // 本当はここでしたくない。Handlerとかでまとめてしたいけどテスト的に
+            // _messageUseCase.Initialize(); // 本当はここでしたくない。Handlerとかでまとめてしたいけどテスト的に
         }
 
         public void Tick()

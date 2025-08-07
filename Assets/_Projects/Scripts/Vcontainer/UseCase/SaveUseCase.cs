@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using GekinatuPackage.SaveJson.Data;
-using Scripts.Component; // AppSettingsData, GenericOwnedCollectionSaveData, CardData のため
+using Scripts.Features.Save; // AppSettingsData, GenericOwnedCollectionSaveData, CardData のため
+using Scripts.Setting;
 using Scripts.Setting;
 using Scripts.Vcontainer.Entity; // VolumeEntity, StudentEntityのため
 using UnityEngine;

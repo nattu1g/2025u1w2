@@ -1,7 +1,9 @@
 using Alchemy.Inspector;
 using MessagePipe;
-using Scripts.Component;
+using Scripts.Features.Save;
+using Scripts.Setting;
 using Scripts.UI;
+using Scripts.UI.Core;
 using Scripts.Vcontainer.Entity;
 using Scripts.Vcontainer.Handler;
 using Scripts.Vcontainer.Presenter;
@@ -17,8 +19,8 @@ namespace Scripts.Vcontainer.Installer
         [Title("LIFETIME")]
         [LabelText("UICanvas")]
         [SerializeField] private UICanvas _uiCanvas;
-        [LabelText("PlayerInputObject")]
-        [SerializeField] private InputBall _inputBall;
+        // [LabelText("PlayerInputObject")]
+        // [SerializeField] private InputBall _inputBall;
 
 
         protected override void Configure(IContainerBuilder builder)
@@ -30,21 +32,29 @@ namespace Scripts.Vcontainer.Installer
             builder.Register<AudioHandler>(Lifetime.Singleton);
             builder.Register<ButtonHandler>(Lifetime.Singleton);
             builder.Register<GameInitializationHandler>(Lifetime.Singleton);
+            builder.Register<PlayerClubHandler>(Lifetime.Singleton);
+            builder.Register<TrainingSelectHandler>(Lifetime.Singleton);
             // UseCase
             builder.Register<AudioUseCase>(Lifetime.Singleton);
             builder.Register<LoadUseCase>(Lifetime.Singleton);
             builder.Register<SaveUseCase>(Lifetime.Singleton);
             builder.Register<MessageUseCase>(Lifetime.Singleton);
+            builder.Register<TrainingUseCase>(Lifetime.Singleton);
+            builder.Register<CalendarUseCase>(Lifetime.Singleton);
 
             // Entity
             builder.Register<AudioEntity>(Lifetime.Singleton);
             builder.Register<VolumeEntity>(Lifetime.Singleton);
+            builder.Register<StudentEntity>(Lifetime.Singleton);
+            builder.Register<PlayerClubEntity>(Lifetime.Singleton);
+            builder.Register<TrainingOptionEntity>(Lifetime.Singleton);
+            builder.Register<CalendarEntity>(Lifetime.Singleton);
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
             // Serializeしたコンポーネント
             builder.RegisterComponent(_uiCanvas);
             // MonoBehaviorでInjectしているスクリプトは直接指定する
-            builder.RegisterComponent(_inputBall);
+            // builder.RegisterComponent(_inputBall);
             // 起点のとなるエントリーポイント
             builder.RegisterEntryPoint<MainPresenter>();
 

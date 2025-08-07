@@ -5,6 +5,7 @@ using LitMotion;
 using LitMotion.Extensions;
 using MessagePipe;
 using Scripts.UI;
+using Scripts.UI.Core;
 using UnityEngine;
 using VContainer.Unity;
 
