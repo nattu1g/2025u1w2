@@ -41,6 +41,7 @@ namespace Scripts.Vcontainer.Installer
             builder.Register<MessageUseCase>(Lifetime.Singleton);
             builder.Register<TrainingUseCase>(Lifetime.Singleton);
             builder.Register<CalendarUseCase>(Lifetime.Singleton);
+            builder.Register<BattleUseCase>(Lifetime.Singleton);
 
             // Entity
             builder.Register<AudioEntity>(Lifetime.Singleton);
@@ -49,6 +50,7 @@ namespace Scripts.Vcontainer.Installer
             builder.Register<PlayerClubEntity>(Lifetime.Singleton);
             builder.Register<TrainingOptionEntity>(Lifetime.Singleton);
             builder.Register<CalendarEntity>(Lifetime.Singleton);
+            builder.Register<DrawCardEntity>(Lifetime.Singleton);
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
             // Serializeしたコンポーネント

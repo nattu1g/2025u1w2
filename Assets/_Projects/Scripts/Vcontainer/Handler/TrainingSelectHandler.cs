@@ -18,15 +18,15 @@ namespace Scripts.Vcontainer.Handler
         readonly PlayerClubEntity _playerClubEntity;
         readonly TrainingUseCase _trainingUseCase;
         readonly CalendarUseCase _calendarUseCase;
-
-
+        readonly BattleUseCase _battleUseCase;
 
         public TrainingSelectHandler(
             TrainingOptionEntity trainingOptionEntity,
             UICanvas uiCanvas,
             PlayerClubEntity playerClubEntity,
             TrainingUseCase trainingUseCase,
-            CalendarUseCase calendarUseCase
+            CalendarUseCase calendarUseCase,
+            BattleUseCase battleUseCase
             )
         {
             _trainingOptionEntity = trainingOptionEntity;
@@ -34,6 +34,7 @@ namespace Scripts.Vcontainer.Handler
             _playerClubEntity = playerClubEntity;
             _trainingUseCase = trainingUseCase;
             _calendarUseCase = calendarUseCase;
+            _battleUseCase = battleUseCase;
         }
 
         public void Initialize()
@@ -77,10 +78,12 @@ namespace Scripts.Vcontainer.Handler
             matchCard.GetComponent<TrainingSelect>().Name.text = "試合";
             var button = matchCard.GetComponent<CustomButton>();
             button.onClickCallback = null;
-            button.onClickCallback = () =>
+            button.onClickCallback = async () =>
             {
                 // TODO: 試合を実行する処理をここに書く
                 Debug.Log("試合開始！");
+                await _battleUseCase.Battle();
+                Debug.Log("試合終了！");
                 OnTrainButtonPressed(); // 週を進める
                 // UpdateTrainingSelectsView();
                 // UpdatePlayerStatusView();

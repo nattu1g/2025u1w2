@@ -28,6 +28,12 @@ namespace Scripts.UI.Views
         [LabelText("相手側スターティングメンバーコンテナ")]
         [SerializeField] private GameObject _opponentMemberContainer;
         public GameObject OpponentMemberContainer => _opponentMemberContainer;
+        [LabelText("ドローカードオブジェクト")]
+        [SerializeField] private GameObject _drawCard;
+        public GameObject DrawCard => _drawCard;
+        [LabelText("ドローカード名称テキスト")]
+        [SerializeField] private TextMeshProUGUI _name;
+        public TextMeshProUGUI Name => _name;
         [LabelText("ドローカード筋力補正テキスト")]
         [SerializeField] private TextMeshProUGUI _correctionPowrText;
         public TextMeshProUGUI CorrectionPowrText => _correctionPowrText;
