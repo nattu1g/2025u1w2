@@ -1,0 +1,16 @@
+{
+    "name": "BBSim.SOs",
+    "rootNamespace": "BBSim.SOs",
+    "references": [
+        "BBSim.Models"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

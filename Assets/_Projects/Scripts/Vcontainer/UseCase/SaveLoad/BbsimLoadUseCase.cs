@@ -1,0 +1,136 @@
+
+using BBSim.Features.Save;
+using BBSim.Settings;
+using Common.Features;
+using Common.Features.Save;
+using Common.Vcontainer.UseCase.SaveLoad;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+// using Scripts.Features.Save; // AppSettingsData, PlayerAndTeacherSaveData, GenericOwnedCollectionSaveData, CardData のため
+// using Scripts.Setting; // GameConstants のため
+// using Scripts.Vcontainer.Entity; // VolumeEntity, StudentEntity, TeacherEntity, EventItemEntity, ClubItemEntity のため
+
+namespace BBSim.Vcontainer.UseCase
+{
+    public class BbsimLoadUseCase : BaseLoadUseCase
+    {
+        // readonly VolumeEntity _volumeEntity;
+        // readonly StudentEntity _studentEntity;
+        // readonly TeacherEntity _teacherEntity;
+        // readonly EventItemEntity _eventItemEntity;
+        // readonly ClubItemEntity _clubItemEntity;
+        // readonly ComponentAssembly _componentAssembly;
+
+        public BbsimLoadUseCase(
+            // VolumeEntity volumeEntity,
+            // StudentEntity studentEntity,
+            // TeacherEntity teacherEntity,
+            // EventItemEntity eventItemEntity,
+            // ClubItemEntity clubItemEntity,
+            // ComponentAssembly componentAssembly,
+            SaveManager saveManager
+            ) : base(saveManager)
+        {
+            // _volumeEntity = volumeEntity;
+            // _studentEntity = studentEntity;
+            // _teacherEntity = teacherEntity;
+            // _eventItemEntity = eventItemEntity;
+            // _clubItemEntity = clubItemEntity;
+            // _componentAssembly = componentAssembly;
+        }
+
+        public override async UniTask LoadAllDataAsync()
+        {
+            await LoadAppSettingsData();
+            await LoadPlayerData();
+        }
+
+        private async UniTask LoadAppSettingsData()
+        {
+            AppSettingsData loadedSettings;
+            string jsonData = await LoadDataAsync(GameConstants.AppSettingsSaveKey, GameConstants.AppSettingsSavePath);
+
+            if (!string.IsNullOrEmpty(jsonData))
+            {
+                loadedSettings = JsonUtility.FromJson<AppSettingsData>(jsonData);
+            }
+            else
+            {
+                loadedSettings = new AppSettingsData(); // デフォルト値
+            }
+
+            if (loadedSettings != null && loadedSettings.GameSettings != null)
+            {
+                // _volumeEntity.SetBGMVolume(loadedSettings.GameSettings._bgmVolume, _componentAssembly.AudioMixer).Forget();
+                // _volumeEntity.SetSEVolume(loadedSettings.GameSettings._seVolume, _componentAssembly.AudioMixer).Forget();
+            }
+            else
+            {
+                await CreateAndSaveDefaultAppSettings();
+            }
+        }
+
+        private async UniTask LoadPlayerData()
+        {
+            PlayerAndTeacherSaveData loadedCombinedData = null;
+            string jsonData = await LoadDataAsync(GameConstants.PlayerDataSaveKey, GameConstants.PlayerDataSavePath);
+
+            if (!string.IsNullOrEmpty(jsonData))
+            {
+                loadedCombinedData = JsonUtility.FromJson<PlayerAndTeacherSaveData>(jsonData);
+            }
+
+            if (loadedCombinedData != null)
+            {
+                // _studentEntity.SetOwnedStudents(loadedCombinedData.Students?.ToDictionary() ?? new Dictionary<string, CardData>());
+                // TODO: TeacherEntityにSetOwnedTeachersメソッドを追加し、ロードした先生データを設定する
+                // _teacherEntity.SetOwnedTeachers(loadedCombinedData.Teachers?.ToDictionary() ?? new Dictionary<string, CardData>());
+                // _eventItemEntity.SetOwnedEventItems(loadedCombinedData.EventItems?.ToDictionary() ?? new Dictionary<string, CardData>());
+                // _clubItemEntity.SetOwnedClubItems(loadedCombinedData.ClubItems?.ToDictionary() ?? new Dictionary<string, CardData>());
+            }
+            else
+            {
+                await CreateAndSaveDefaultPlayerAndTeacherData(null); // componentAssembly は後で注入
+            }
+        }
+
+        /// <summary>
+        /// 初めてオプションデータをロードした時に、セーブデータを作成する
+        /// </summary>
+        /// <returns></returns>
+        private async UniTask CreateAndSaveDefaultAppSettings()
+        {
+            var defaultSettings = new AppSettingsData();
+            // _volumeEntity.SetBGMVolume(defaultSettings.GameSettings._bgmVolume, _componentAssembly.AudioMixer).Forget();
+            // _volumeEntity.SetSEVolume(defaultSettings.GameSettings._seVolume, _componentAssembly.AudioMixer).Forget();
+
+            string jsonToSave = JsonUtility.ToJson(defaultSettings);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            SaveManager.SaveData(GameConstants.AppSettingsSaveKey, jsonToSave);
+#else
+            SaveManager.SaveData(GameConstants.AppSettingsSavePath, new SaveValue<AppSettingsData, bool?>(defaultSettings, false));
+#endif
+            await UniTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 初めてプレイヤーデータをロードした時に、セーブデータを作成する
+        /// </summary>
+        /// /// <param name="componentAssembly">ComponentAssembly (デフォルトデータ生成に必要)</param>
+        /// <returns></returns>
+        private async UniTask CreateAndSaveDefaultPlayerAndTeacherData(ComponentAssembly componentAssembly) // componentAssembly は後で注入
+        {
+            var combinedSaveData = new PlayerAndTeacherSaveData();
+
+            string jsonToSave = JsonUtility.ToJson(combinedSaveData);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+            SaveManager.SaveData(GameConstants.PlayerDataSaveKey, jsonToSave);
+#else
+            SaveManager.SaveData(GameConstants.PlayerDataSavePath, new SaveValue<PlayerAndTeacherSaveData, bool?>(combinedSaveData, false));
+#endif
+            await UniTask.CompletedTask;
+        }
+    }
+}

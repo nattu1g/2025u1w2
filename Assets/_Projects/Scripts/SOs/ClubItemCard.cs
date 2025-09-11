@@ -1,8 +1,7 @@
-using System.Collections.Generic;
-using Scripts.Setting;
+using BBSim.Models;
 using UnityEngine;
 
-namespace Scripts
+namespace BBSim.SOs
 {
     [CreateAssetMenu(fileName = "ClubItemCard", menuName = "ScriptableObjects/ClubItemCard", order = 1)]
     public class ClubItemCard : ScriptableObject

@@ -1,15 +1,12 @@
-using Scripts.Features.Status;
-using Scripts.Features.Training;
-using Scripts.Models;
-using Scripts.UI;
-using Scripts.UI.Component;
-using Scripts.UI.Core;
-using Scripts.Vcontainer.Entity; // Added for PlayerClubEntity
-using Scripts.Vcontainer.Handler;
-using Scripts.Vcontainer.UseCase;
+using BBSim.Features.Status;
+using BBSim.Features.Training;
+using BBSim.UIs.Core;
+using BBSim.Vcontainer.Entity;
+using BBSim.Vcontainer.UseCase;
+using Common.UIs.Component;
 using UnityEngine;
 
-namespace Scripts.Vcontainer.Handler
+namespace BBSim.Vcontainer.Handler
 {
     public class TrainingSelectHandler : IHandler
     {

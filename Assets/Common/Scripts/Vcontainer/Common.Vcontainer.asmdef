@@ -1,0 +1,28 @@
+{
+    "name": "Common.Vcontainer",
+    "rootNamespace": "Common.Vcontainer",
+    "references": [
+        "VContainer",
+        "AudioConductor",
+        "UniTask",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "Alchemy",
+        "MessagePipe",
+        "MessagePipe.VContainer",
+        "LitMotion",
+        "LitMotion.Extensions",
+        "Common.Features",
+        "Common.Settings",
+        "Common.UIs"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

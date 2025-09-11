@@ -1,14 +1,15 @@
-using System;
-using Scripts.Setting;
 
-public class TrainingOption
+namespace BBSim.Models
 {
-    public string Name { get; }
-    public TrainingType Type { get; }
-
-    public TrainingOption(string name, TrainingType type)
+    public class TrainingOption
     {
-        Name = name;
-        Type = type;
+        public string Name { get; }
+        public TrainingType Type { get; }
+
+        public TrainingOption(string name, TrainingType type)
+        {
+            Name = name;
+            Type = type;
+        }
     }
 }

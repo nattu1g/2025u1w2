@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Scripts.Models
+namespace BBSim.Models
 {
     public class DrawCard
     {

@@ -1,11 +1,9 @@
-using Scripts.Features;
-using Scripts.Features.Status;
-using Scripts.UI.Core;
-using Scripts.Vcontainer.Entity;
-using Scripts.Vcontainer.Handler;
-using UnityEngine;
+using BBSim.Features.Status;
+using BBSim.UIs.Core;
+using BBSim.Vcontainer.Entity;
+using Common.Features;
 
-namespace Scripts.Vcontainer.Handler
+namespace BBSim.Vcontainer.Handler
 {
     public class PlayerClubHandler : IHandler
     {

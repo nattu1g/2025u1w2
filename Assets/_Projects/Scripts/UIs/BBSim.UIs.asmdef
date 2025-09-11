@@ -1,0 +1,22 @@
+{
+    "name": "BBSim.UIs",
+    "rootNamespace": "BBSim.UIs",
+    "references": [
+        "BBSim.Features",
+        "Alchemy",
+        "LitMotion",
+        "LitMotion.Extensions",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "Common.UIs"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

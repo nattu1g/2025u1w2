@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Scripts.Vcontainer.Entity
+namespace BBSim.Vcontainer.Entity
 {
     public class OpponentClubEntity
     {

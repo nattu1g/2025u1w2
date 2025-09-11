@@ -1,10 +1,10 @@
 using Alchemy.Inspector;
-using Scripts.Models;
+using BBSim.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.Features.Status
+namespace BBSim.Features.Status
 {
     public class StatusCard : MonoBehaviour
     {

@@ -1,28 +1,16 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AudioConductor.Runtime.Core;
 using AudioConductor.Runtime.Core.Models;
-using Cysharp.Threading.Tasks;
-using GekinatuPackage.SaveJson.Data;
-using GekinatuPackage.SaveJson.Json;
+using BBSim.UIs.Core;
+using BBSim.Vcontainer.Handler;
+using BBSim.Vcontainer.UseCase;
+using Common.Features;
+using Common.Vcontainer.Entity;
+using Common.Vcontainer.Handler;
+using Common.Vcontainer.UseCase.Audio;
 using MessagePipe;
-using Scripts.Features.Save;
-using Scripts.Features;
-using Scripts.Setting;
-using Scripts.UI;
-using Scripts.Vcontainer.Entity;
-using Scripts.Vcontainer.Handler;
-using Scripts.Vcontainer.UseCase;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using VContainer.Unity;
-using ReactiveInputSystem;
-using System.Threading;
-using R3;
-using Scripts.UI.Core;
 
-namespace Scripts.Vcontainer.Presenter
+namespace BBSim.Vcontainer.Presenter
 {
 
     public class MainPresenter : IInitializable, ITickable
@@ -44,16 +32,14 @@ namespace Scripts.Vcontainer.Presenter
         // MainLifetimeScopeで登録されたコンポーネント
         readonly UICanvas _uiCanvas;
         // Handler
-        readonly GameInitializationHandler _gameInitHandler;
-        readonly AudioHandler _audioHandler;
-        readonly SaveLoadHandler _saveLoadHandler;
+        // readonly GameInitializationHandler _gameInitHandler;
         readonly ButtonHandler _buttonHandler;
         readonly PlayerClubHandler _playerClubHandler;
         readonly TrainingSelectHandler _trainingSelectHandler;
         // UseCase
         readonly AudioUseCase _audioUseCase;
-        readonly SaveUseCase _saveUseCase;
-        readonly LoadUseCase _loadUseCase;
+        readonly BbsimSaveUseCase _bbsimSaveUseCase;
+        readonly BbsimLoadUseCase _bbsimLoadUseCase;
         readonly MessageUseCase _messageUseCase;
 
 
@@ -68,15 +54,13 @@ namespace Scripts.Vcontainer.Presenter
             ISubscriber<int> subscriber,
             IPublisher<MessageEvent> messagePublisher,
             UICanvas uiCanvas,
-            GameInitializationHandler gameInitHandler,
+            // GameInitializationHandler gameInitHandler,
             PlayerClubHandler playerClubHandler,
             TrainingSelectHandler trainingSelectHandler,
-            AudioHandler audioHandler,
-            SaveLoadHandler saveLoadHandler,
             ButtonHandler buttonHandler,
             AudioUseCase audioUseCase,
-            SaveUseCase saveUseCase,
-            LoadUseCase loadUseCase,
+            BbsimSaveUseCase bbsimSaveUseCase,
+            BbsimLoadUseCase bbsimLoadUseCase,
             MessageUseCase messageUseCase
             )
         {
@@ -89,59 +73,24 @@ namespace Scripts.Vcontainer.Presenter
             _subscriber = subscriber;
             _messagePublisher = messagePublisher;
             _uiCanvas = uiCanvas;
-            _gameInitHandler = gameInitHandler;
             _playerClubHandler = playerClubHandler;
             _trainingSelectHandler = trainingSelectHandler;
-            _audioHandler = audioHandler;
-            _saveLoadHandler = saveLoadHandler;
             _buttonHandler = buttonHandler;
             _audioUseCase = audioUseCase;
-            _saveUseCase = saveUseCase;
-            _loadUseCase = loadUseCase;
+            _bbsimSaveUseCase = bbsimSaveUseCase;
+            _bbsimLoadUseCase = bbsimLoadUseCase;
             _messageUseCase = messageUseCase;
         }
         // InputAction inputAction;
         // CancellationToken cancellationToken;
-        public async void Initialize()
+        public void Initialize()
         {
-            // inputAction = new InputAction();
-            // cancellationToken = new CancellationToken();
-
-            // inputAction.StartedAsObservable(cancellationToken)
-            //     .Subscribe(x => Debug.Log("Started"));
-
-
-            // inputAction.PerformedAsObservable(cancellationToken)
-            //     .Subscribe(x => Debug.Log("Performed" + x));
-            // inputAction.CanceledAsObservable(cancellationToken)
-            //     .Subscribe(x => Debug.Log("Canceled"));
             Debug.Log("Application.persistentDataPath:" + Application.persistentDataPath);
 
-            await _saveLoadHandler.LoadAllFile();
+            // ★他のHandlerの初期化処理はInitializationOrchestratorに移動したため、ここでは不要
 
-            await _audioHandler.Initialize();
-            _gameInitHandler.Initialize();
-
-            _playerClubHandler.Initialize();
-            _trainingSelectHandler.Initialize();
-
-
-
-            // 一覧リストの登録
-            // _listParentHandler.Initialize();
-            // _studentListHandler.Initialize();
-            // _studentFilterHandler.Initialize();
-            // _studentDetailHandler.Initialize();
-
-            await _audioEntity.PlayBGM("MainBGM");
-
-            // Sub Example
-            // _subscriber.Subscribe((num) =>
-            // {
-            //     Debug.Log("[MainPresenter] random num" + num);
-            // });
-
-            // _messageUseCase.Initialize(); // 本当はここでしたくない。Handlerとかでまとめてしたいけどテスト的に
+            // MainPresenterが直接担当する初期化処理のみを残す
+            // await _audioEntity.PlayBGM("MainBGM");
         }
 
         public void Tick()

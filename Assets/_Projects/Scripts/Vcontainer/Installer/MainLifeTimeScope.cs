@@ -1,13 +1,14 @@
 using Alchemy.Inspector;
+using BBSim.UIs.Core;
+using BBSim.Vcontainer.Entity;
+using BBSim.Vcontainer.Handler;
+using BBSim.Vcontainer.Presenter;
+using BBSim.Vcontainer.UseCase;
+using Common.Features.Save;
+using Common.Vcontainer.Entity;
+using Common.Vcontainer.Handler;
+using Common.Vcontainer.UseCase.Audio;
 using MessagePipe;
-using Scripts.Features.Save;
-using Scripts.Setting;
-using Scripts.UI;
-using Scripts.UI.Core;
-using Scripts.Vcontainer.Entity;
-using Scripts.Vcontainer.Handler;
-using Scripts.Vcontainer.Presenter;
-using Scripts.Vcontainer.UseCase;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -27,17 +28,17 @@ namespace Scripts.Vcontainer.Installer
         {
             // PubSub
             builder.RegisterMessagePipe();
-            // Handler
-            builder.Register<SaveLoadHandler>(Lifetime.Singleton);
-            builder.Register<AudioHandler>(Lifetime.Singleton);
+
+            // Handler (汎用的なものや、未整理のもの)
             builder.Register<ButtonHandler>(Lifetime.Singleton);
-            builder.Register<GameInitializationHandler>(Lifetime.Singleton);
-            builder.Register<PlayerClubHandler>(Lifetime.Singleton);
-            builder.Register<TrainingSelectHandler>(Lifetime.Singleton);
+            // builder.Register<GameInitializationHandler>(Lifetime.Singleton);
+            builder.Register<PlayerClubHandler>(Lifetime.Singleton); // TODO: 将来的にPresenterに移行する候補
+            builder.Register<TrainingSelectHandler>(Lifetime.Singleton); // TODO: 将来的にPresenterに移行する候補
+
             // UseCase
             builder.Register<AudioUseCase>(Lifetime.Singleton);
-            builder.Register<LoadUseCase>(Lifetime.Singleton);
-            builder.Register<SaveUseCase>(Lifetime.Singleton);
+            builder.Register<BbsimLoadUseCase>(Lifetime.Singleton);
+            builder.Register<BbsimSaveUseCase>(Lifetime.Singleton);
             builder.Register<MessageUseCase>(Lifetime.Singleton);
             builder.Register<TrainingUseCase>(Lifetime.Singleton);
             builder.Register<CalendarUseCase>(Lifetime.Singleton);
@@ -51,15 +52,20 @@ namespace Scripts.Vcontainer.Installer
             builder.Register<TrainingOptionEntity>(Lifetime.Singleton);
             builder.Register<CalendarEntity>(Lifetime.Singleton);
             builder.Register<DrawCardEntity>(Lifetime.Singleton);
+
+            // Presenter (通常のクラスとして登録)
+            builder.Register<SaveLoadPresenter>(Lifetime.Singleton);
+            builder.Register<MainPresenter>(Lifetime.Singleton);
+            builder.Register<OptionPresenter>(Lifetime.Singleton);
+
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
+
             // Serializeしたコンポーネント
             builder.RegisterComponent(_uiCanvas);
-            // MonoBehaviorでInjectしているスクリプトは直接指定する
-            // builder.RegisterComponent(_inputBall);
-            // 起点のとなるエントリーポイント
-            builder.RegisterEntryPoint<MainPresenter>();
 
+            // 初期化の起点となる唯一のEntryPoint
+            builder.RegisterEntryPoint<InitializationOrchestrator>();
         }
     }
 }

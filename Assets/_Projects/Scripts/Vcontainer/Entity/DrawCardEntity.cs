@@ -1,7 +1,7 @@
-using Scripts.Models;
+using BBSim.Models;
 using UnityEngine;
 
-namespace Scripts.Vcontainer.Entity
+namespace BBSim.Vcontainer.Entity
 {
     public class DrawCardEntity
     {

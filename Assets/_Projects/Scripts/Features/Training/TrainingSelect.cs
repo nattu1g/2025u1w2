@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Scripts.Features.Training
+namespace BBSim.Features.Training
 {
     public class TrainingSelect : MonoBehaviour
     {

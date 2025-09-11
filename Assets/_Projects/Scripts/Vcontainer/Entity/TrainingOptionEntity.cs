@@ -1,15 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
-using Scripts.Setting;
-using UnityEngine;
+using BBSim.Models;
 
-public class TrainingOptionEntity
+namespace BBSim.Vcontainer.Entity
 {
-    private readonly List<TrainingOption> _allOptions;
-
-    public TrainingOptionEntity()
+    public class TrainingOptionEntity
     {
-        _allOptions = new List<TrainingOption>
+        private readonly List<TrainingOption> _allOptions;
+
+        public TrainingOptionEntity()
+        {
+            _allOptions = new List<TrainingOption>
         {
             new TrainingOption("筋トレ", TrainingType.Strength),
             new TrainingOption("持久走", TrainingType.Stamina),
@@ -19,10 +20,12 @@ public class TrainingOptionEntity
             new TrainingOption("持久走(強化)", TrainingType.StaminaUp),
             new TrainingOption("集中力トレ(強化)", TrainingType.FateUp),
         };
+        }
+
+        public List<TrainingOption> GetRandomOptions(int count = 5)
+        {
+            return _allOptions.OrderBy(_ => UnityEngine.Random.value).Take(count).ToList();
+        }
     }
 
-    public List<TrainingOption> GetRandomOptions(int count = 5)
-    {
-        return _allOptions.OrderBy(_ => UnityEngine.Random.value).Take(count).ToList();
-    }
 }

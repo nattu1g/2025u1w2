@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Scripts.Models;
-using UnityEngine;
+using BBSim.Models;
 
-namespace Scripts.Vcontainer.Entity
+namespace BBSim.Vcontainer.Entity
 {
     public class PlayerClubEntity
     {

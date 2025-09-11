@@ -1,0 +1,21 @@
+{
+    "name": "Common.UIs",
+    "rootNamespace": "Common.UIs",
+    "references": [
+        "Alchemy",
+        "LitMotion",
+        "LitMotion.Extensions",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "Common.Features"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
