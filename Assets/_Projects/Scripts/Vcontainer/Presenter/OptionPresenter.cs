@@ -1,40 +1,36 @@
 using System;
 using BBSim.UIs.Core;
 using BBSim.Vcontainer.UseCase;
-using Common.Vcontainer.Entity;
 using Common.Vcontainer.Handler;
 using Common.Vcontainer.UseCase.Audio;
 using Cysharp.Threading.Tasks;
 using R3;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace BBSim.Vcontainer.Presenter
 {
-    public class OptionPresenter : IInitializable, IDisposable
+    // IInitializableを削除し、IDisposableのみを実装する
+    public class OptionPresenter : IDisposable, IStartable
     {
-        private readonly UICanvas _uiCanvas; // OptionViewを持つUICanvas
+        private readonly UICanvas _uiCanvas;
         private readonly AudioUseCase _audioUseCase;
         private readonly BbsimSaveUseCase _bbsimSaveUseCase;
         private readonly ButtonHandler _buttonHandler;
-        private readonly AudioEntity _audioEntity;
         private readonly CompositeDisposable _disposables = new();
 
+        // コンストラクタで全ての初期化処理を行う
         public OptionPresenter(
             UICanvas uiCanvas,
             AudioUseCase audioUseCase,
             BbsimSaveUseCase saveUseCase,
-            ButtonHandler buttonHandler,
-            AudioEntity audioEntity)
+            ButtonHandler buttonHandler)
         {
             _uiCanvas = uiCanvas;
             _audioUseCase = audioUseCase;
             _bbsimSaveUseCase = saveUseCase;
             _buttonHandler = buttonHandler;
-            _audioEntity = audioEntity;
-        }
 
-        public void Initialize()
-        {
             var optionView = _uiCanvas.OptionView;
 
             // --- UseCaseのデータ変更を購読し、UIを更新する ---
@@ -47,33 +43,25 @@ namespace BBSim.Vcontainer.Presenter
                 .AddTo(_disposables);
 
             // --- UIイベントを購読し、UseCaseを呼び出す ---
-            // UseCaseのメソッドがUniTaskを返すようになったため、ラムダ内でawaitするか、メソッドグループを直接渡す
             _buttonHandler.SetupActionButton(optionView.BgmPlusButton, _audioUseCase.BgmUp);
             _buttonHandler.SetupActionButton(optionView.BgmMinusButton, _audioUseCase.BgmDown);
 
-            _buttonHandler.SetupActionButton(optionView.SePlusButton, async () =>
-            {
-                await _audioUseCase.SeUp();
-                await _audioEntity.PlaySE("se1");
-            });
-            _buttonHandler.SetupActionButton(optionView.SeMinusButton, async () =>
-            {
-                await _audioUseCase.SeDown();
-                await _audioEntity.PlaySE("se1");
-            });
+            // SE再生はUseCaseの責務になったため、Presenterはメソッドを呼び出すだけ
+            _buttonHandler.SetupActionButton(optionView.SePlusButton, _audioUseCase.SeUp);
+            _buttonHandler.SetupActionButton(optionView.SeMinusButton, _audioUseCase.SeDown);
 
             // オプション開閉ボタン
             _buttonHandler.SetupActionButton(optionView.ShowButton, async () =>
             {
                 _uiCanvas.Show(optionView);
-                await _audioEntity.PlaySE("se1");
-                // return UniTask.CompletedTask;
+                // UI効果音の再生もUseCaseに依頼する
+                await _audioUseCase.PlayUISound("se1");
             });
 
             _buttonHandler.SetupActionButton(optionView.HideButton, async () =>
             {
                 _uiCanvas.Hide(optionView);
-                await _audioEntity.PlaySE("se1");
+                await _audioUseCase.PlayUISound("se1");
                 await _bbsimSaveUseCase.SaveAllDataAsync();
             });
         }
@@ -81,6 +69,10 @@ namespace BBSim.Vcontainer.Presenter
         public void Dispose()
         {
             _disposables.Dispose();
+        }
+
+        public void Start()
+        {
         }
     }
 }

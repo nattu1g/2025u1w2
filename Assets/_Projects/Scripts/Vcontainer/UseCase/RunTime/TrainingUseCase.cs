@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using BBSim.Events;
 using BBSim.Models;
 using BBSim.Vcontainer.Entity;
+using MessagePipe;
 using UnityEngine;
 
 namespace BBSim.Vcontainer.UseCase
@@ -7,12 +10,20 @@ namespace BBSim.Vcontainer.UseCase
     public class TrainingUseCase
     {
         private readonly PlayerClubEntity _playerClubEntity;
+        private readonly TrainingOptionEntity _trainingOptionEntity;
+        private readonly TrainingSelectUseCase _trainingSelectUseCase;
+
+
 
         public TrainingUseCase(
-            PlayerClubEntity playerClubEntity
+            PlayerClubEntity playerClubEntity,
+            TrainingOptionEntity trainingOptionEntity,
+            TrainingSelectUseCase trainingSelectUseCase
             )
         {
             _playerClubEntity = playerClubEntity;
+            _trainingOptionEntity = trainingOptionEntity;
+            _trainingSelectUseCase = trainingSelectUseCase;
         }
 
         public void ExecuteTraining(TrainingType trainingType)
@@ -22,7 +33,8 @@ namespace BBSim.Vcontainer.UseCase
             {
                 ApplyEffect(student, trainingType);
             }
-            // Debug.Log($"{trainingType} のトレーニングを実行しました。");
+            // トレーニングが終了して週を進める
+            _trainingSelectUseCase.AdvanceWeek();
         }
 
         private void ApplyEffect(Student student, TrainingType trainingType)

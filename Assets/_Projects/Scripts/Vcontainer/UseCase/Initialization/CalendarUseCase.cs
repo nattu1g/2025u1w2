@@ -1,14 +1,18 @@
 
 using BBSim.UIs.Core;
 using BBSim.Vcontainer.Entity;
+using Common.Vcontainer.UseCase.Base;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace BBSim.Vcontainer.UseCase
 {
-    public class CalendarUseCase
+    public class CalendarUseCase : IInitializableUseCase
     {
         readonly UICanvas _uiCanvas;
         readonly CalendarEntity _calendarEntity;
 
+        public int Order => 100;
 
         public CalendarUseCase(
             UICanvas uiCanvas,
@@ -19,11 +23,13 @@ namespace BBSim.Vcontainer.UseCase
             _calendarEntity = calendarEntity;
         }
 
-        public void Initialize()
+        public async UniTask InitializeAsync()
         {
+            Debug.Log("[CalendarUseCase][InitializeAsync] Start");
             _calendarEntity.OnTurnAdvanced += UpdateCalendarView;
             _calendarEntity.OnMonthChanged += UpdateCalendarView;
             UpdateCalendarView();
+            await UniTask.CompletedTask;
         }
         public void UpdateCalendarView()
         {
@@ -54,6 +60,12 @@ namespace BBSim.Vcontainer.UseCase
             return _calendarEntity.IsLast;
         }
 
+        // public WeekType GetCurrentWeekType()
+        // {
+        //     if (_calendarEntity.IsLast) return WeekType.Last;
+        //     if (_calendarEntity.IsMatchWeek) return WeekType.Match;
+        //     return WeekType.Normal;
+        // }
 
         public void Clear()
         {
@@ -64,6 +76,5 @@ namespace BBSim.Vcontainer.UseCase
             _calendarEntity.OnTurnAdvanced -= UpdateCalendarView;
             _calendarEntity.OnMonthChanged -= UpdateCalendarView;
         }
-
     }
 }

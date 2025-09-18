@@ -13,7 +13,9 @@ namespace BBSim.Vcontainer.Entity
             // 学年ごとに補正を設定
             int baseMin = 10 + (grade - 1) * 10; // 1年:10, 2年:20, 3年:30
             int baseMax = 30 + (grade - 1) * 10; // 1年:30, 2年:40, 3年:50
-            return new Student(name, grade, baseMin, baseMax);
+            int id = grade * 1000 + Random.Range(1, 1000);
+
+            return new Student(id, name, grade, baseMin, baseMax, new Position(0, 0));
         }
         private string GetRandomName()
         {

@@ -16,11 +16,13 @@
         "Common.Features",
         "Common.UIs",
         "Common.Vcontainer",
+        "Common.Events",
         "BBSim.Models",
         "BBSim.Settings",
         "BBSim.Features",
         "BBSim.SOs",
-        "BBSim.UIs"
+        "BBSim.UIs",
+        "BBSim.Events"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

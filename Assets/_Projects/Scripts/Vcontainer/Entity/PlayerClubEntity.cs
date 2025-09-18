@@ -1,11 +1,14 @@
-using System.Collections.Generic;
-using BBSim.Models;
-
 namespace BBSim.Vcontainer.Entity
 {
-    public class PlayerClubEntity
+    // ClubEntityを継承する
+    public class PlayerClubEntity : ClubEntity
     {
-        private List<Student> students = new List<Student>();
-        public List<Student> Students => students;
+        // 基底クラスのコンストラクタを呼び出す
+        public PlayerClubEntity(StudentEntity studentEntity) : base(studentEntity)
+        {
+        }
+
+        // 今後、プレイヤー特有のロジックが必要になればここに追加する
+        // スタメン
     }
 }

@@ -1,8 +1,10 @@
 
+using System.Threading.Tasks;
 using BBSim.Features.Save;
 using BBSim.Settings;
 using Common.Features;
 using Common.Features.Save;
+using Common.Vcontainer.UseCase.Base;
 using Common.Vcontainer.UseCase.SaveLoad;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -12,8 +14,10 @@ using UnityEngine;
 
 namespace BBSim.Vcontainer.UseCase
 {
-    public class BbsimLoadUseCase : BaseLoadUseCase
+    public class BbsimLoadUseCase : BaseLoadUseCase, IInitializableUseCase
     {
+        public int Order => 0;
+
         // readonly VolumeEntity _volumeEntity;
         // readonly StudentEntity _studentEntity;
         // readonly TeacherEntity _teacherEntity;
@@ -38,7 +42,12 @@ namespace BBSim.Vcontainer.UseCase
             // _clubItemEntity = clubItemEntity;
             // _componentAssembly = componentAssembly;
         }
+        public async UniTask InitializeAsync()
+        {
+            Debug.Log("[BbsimLoadUseCase][InitializeAsync] Start");
 
+            await LoadAllDataAsync();
+        }
         public override async UniTask LoadAllDataAsync()
         {
             await LoadAppSettingsData();
@@ -132,5 +141,7 @@ namespace BBSim.Vcontainer.UseCase
 #endif
             await UniTask.CompletedTask;
         }
+
+
     }
 }

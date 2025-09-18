@@ -1,6 +1,5 @@
 using AudioConductor.Runtime.Core.Models;
 using BBSim.UIs.Core;
-using BBSim.Vcontainer.Handler;
 using BBSim.Vcontainer.UseCase;
 using Common.Features;
 using Common.Vcontainer.Entity;
@@ -34,8 +33,8 @@ namespace BBSim.Vcontainer.Presenter
         // Handler
         // readonly GameInitializationHandler _gameInitHandler;
         readonly ButtonHandler _buttonHandler;
-        readonly PlayerClubHandler _playerClubHandler;
-        readonly TrainingSelectHandler _trainingSelectHandler;
+        // readonly PlayerClubHandler _playerClubHandler;
+        // readonly TrainingSelectHandler _trainingSelectHandler;
         // UseCase
         readonly AudioUseCase _audioUseCase;
         readonly BbsimSaveUseCase _bbsimSaveUseCase;
@@ -55,8 +54,8 @@ namespace BBSim.Vcontainer.Presenter
             IPublisher<MessageEvent> messagePublisher,
             UICanvas uiCanvas,
             // GameInitializationHandler gameInitHandler,
-            PlayerClubHandler playerClubHandler,
-            TrainingSelectHandler trainingSelectHandler,
+            // PlayerClubHandler playerClubHandler,
+            // TrainingSelectHandler trainingSelectHandler,
             ButtonHandler buttonHandler,
             AudioUseCase audioUseCase,
             BbsimSaveUseCase bbsimSaveUseCase,
@@ -73,8 +72,8 @@ namespace BBSim.Vcontainer.Presenter
             _subscriber = subscriber;
             _messagePublisher = messagePublisher;
             _uiCanvas = uiCanvas;
-            _playerClubHandler = playerClubHandler;
-            _trainingSelectHandler = trainingSelectHandler;
+            // _playerClubHandler = playerClubHandler;
+            // _trainingSelectHandler = trainingSelectHandler;
             _buttonHandler = buttonHandler;
             _audioUseCase = audioUseCase;
             _bbsimSaveUseCase = bbsimSaveUseCase;
