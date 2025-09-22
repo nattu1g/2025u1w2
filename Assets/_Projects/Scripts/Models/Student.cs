@@ -48,11 +48,11 @@ namespace BBSim.Models
                 case BasketballPosition.PointGuard:
                 case BasketballPosition.ShootingGuard:
                 case BasketballPosition.SmallForward:
-                    ShootRange = 4.0f;
+                    ShootRange = 3.0f;
                     break;
                 case BasketballPosition.PowerForward:
                 case BasketballPosition.Center:
-                    ShootRange = 2.5f;
+                    ShootRange = 1.5f;
                     break;
             }
 

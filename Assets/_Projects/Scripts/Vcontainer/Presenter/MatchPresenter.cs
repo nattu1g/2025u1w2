@@ -153,10 +153,10 @@ namespace BBSim.Vcontainer.Presenter
                                             eventText = $"{player.Name}のシュート！ Failed";
                                             break;
                                         case "DriveSuccess":
-                                            eventText = $"{player.Name}がドライブで切り込む！";
+                                            eventText = $"{player.Name}がDrive Success！";
                                             break;
                                         case "DriveFail":
-                                            eventText = $"{player.Name}のドライブは止められた！";
+                                            eventText = $"{player.Name}のdrive Failed！";
                                             break;
                                     }
 

@@ -35,7 +35,7 @@ namespace BBSim.Vcontainer
         private const int TotalMatchTimeInSeconds = 600; // 1試合の総時間（秒）
         private const int MinPossessionTime = 5; // 1ポゼッションの最短時間
         private const int MaxPossessionTime = 25; // 1ポゼッションの最長時間
-        private const float DefaultTransitionDuration = 0.6f; // 攻守交代にかかる基本時間
+        private const float DefaultTransitionDuration = 1.5f; // 攻守交代にかかる基本時間
         private const int TransitionSteps = 3; // 攻守交代時の動きのステップ数
         private const int DriveTimeCost = 1; // ドライブにかかる時間コスト
 
@@ -69,6 +69,8 @@ namespace BBSim.Vcontainer
         private const int MaxPressurePassChanceBonus = 60; // プレッシャー下でパス確率に加算される最大ボーナス (%)
         private const float EffectiveShootDistance = 4.5f; // 有効なシュートチャンスと見なされるゴールからの距離
         private const int BaseDriveChance = 35; // ドライブを試みる基本確率 (%)
+        private const int ShootChanceAfterDrive = 75; // ドライブ成功後にシュートを試みる確率 (%)
+        private const float MinOpenDistanceForPass = 3.0f; // ドライブ後のパス対象となる味方との最低距離
         private const float DriveDistance = 4.5f; // ドライブで進む距離
         private const int DriveRandomnessFactor = 20; // ドライブ成功判定に加わるランダム要素の幅
         private const float PressureDistance = 2.0f; // ディフェンダーがこの距離以内に入るとプレッシャーがかかる
@@ -153,13 +155,16 @@ namespace BBSim.Vcontainer
                     var winningTeam = playerTeam.Contains(oldBallHolder) ? playerTeam : opponentTeam;
                     var losingTeam = playerTeam.Contains(oldBallHolder) ? opponentTeam : playerTeam;
 
+                    // スローインする選手(Thrower)を先に決定
+                    var thrower = losingTeam[rng.Next(losingTeam.Count)];
+
                     // 1. 得点したチームは守備位置（ハーフライン）へ戻る
                     float transitionDuration = DefaultTransitionDuration;
                     int steps = TransitionSteps;
                     for (int i = 1; i <= steps; i++)
                     {
                         float stepTime = elapsedTime + (transitionDuration * i / steps);
-                        MoveToHalfLineDefense(winningTeam, stepTime);
+                        MoveToDefensiveTransition(winningTeam, thrower, stepTime);
                     }
                     elapsedTime += (int)transitionDuration;
 
@@ -168,8 +173,7 @@ namespace BBSim.Vcontainer
                     float throwInX = isPlayerTeamRestarting ? -CourtSideLineX : CourtSideLineX;
                     float restartAreaX = isPlayerTeamRestarting ? -ThrowInRestartAreaX : ThrowInRestartAreaX;
 
-                    // スローインする選手(Thrower)を決定し、サイドラインに配置
-                    var thrower = losingTeam[rng.Next(losingTeam.Count)];
+                    // throwerの位置を設定
                     thrower.Pos = new Position(throwInX, (float)(rng.NextDouble() * CourtWidth - CourtHalfWidth));
 
                     // パスを受ける選手たち(Receivers)をコート内に配置
@@ -251,7 +255,7 @@ namespace BBSim.Vcontainer
                     {
                         float stepTime = elapsedTime + (transitionDuration * i / steps);
                         // 守備側は、新しいボール保持者（リバウンドを取った選手）をマークしつつ自陣に戻る
-                        MoveToHalfLineDefense(defendingTeam, stepTime); // ★修正点: winningTeam -> defendingTeam に変更
+                        MoveToDefensiveTransition(defendingTeam, ballHolder, stepTime);
                     }
                     elapsedTime += (int)transitionDuration;
                 }
@@ -272,16 +276,20 @@ namespace BBSim.Vcontainer
         private void MoveToDefensiveTransition(List<Student> defendingTeam, Student newBallHolder, float eventTime)
         {
             bool isPlayerTeamDefending = defendingTeam.Any(p => playerTeam.Contains(p));
-            Position defendedGoal = isPlayerTeamDefending ? PLAYER_GOAL_POSITION : OPPONENT_GOAL_POSITION;
+            // 守備に戻る際の目標地点を、自陣のゴールではなくハーフライン少し手前に設定する
+            float rallyPointX = isPlayerTeamDefending ? -2.0f : 2.0f;
 
             foreach (var defender in defendingTeam)
             {
+                // 各ディフェンダーの現在のY座標を維持した、ハーフライン付近の目標地点
+                var defensiveRallyPoint = new Position(rallyPointX, defender.Pos.Y);
+
                 // 1. 次のボール保持者に向かうベクトル
                 var toBallHolder = new Vector2(newBallHolder.Pos.X - defender.Pos.X, newBallHolder.Pos.Y - defender.Pos.Y).normalized;
-                // 2. 自陣のゴールに戻るベクトル
-                var toOwnGoal = new Vector2(defendedGoal.X - defender.Pos.X, defendedGoal.Y - defender.Pos.Y).normalized;
-                // 3. 2つのベクトルを合成して移動方向を決定（ゴールに戻る動きを優先）
-                var finalMovement = (toBallHolder * 0.2f + toOwnGoal * 0.8f).normalized; // ゴールに戻る動きの比重を高める
+                // 2. 自陣の目標地点に戻るベクトル
+                var toRallyPoint = new Vector2(defensiveRallyPoint.X - defender.Pos.X, defensiveRallyPoint.Y - defender.Pos.Y).normalized;
+                // 3. 2つのベクトルを合成して移動方向を決定（目標地点に戻る動きを優先）
+                var finalMovement = (toBallHolder * 0.3f + toRallyPoint * 0.7f).normalized;
 
                 // トランジション時は通常より速く移動する
                 defender.MoveTowards(new Position(defender.Pos.X + finalMovement.x, defender.Pos.Y + finalMovement.y), speed: TransitionSpeed);
@@ -527,11 +535,42 @@ namespace BBSim.Vcontainer
                             bool driveSuccess = AttemptDrive(ballHolder, defender);
                             if (driveSuccess)
                             {
-                                // ドライブ成功！ゴールに大きく近づき、ポゼッションを継続
+                                // ドライブ成功！
                                 matchEvents.Add(new PlayerActionEvent(elapsedTime + t, ballHolder.Id, "DriveSuccess", ballHolder.Pos));
                                 t += DriveTimeCost; // ドライブには少し時間がかかる
                                 if (t >= duration) break;
-                                continue; // 次のループでシュートやパスのチャンスをうかがう
+
+                                // --- ドライブ後のアクション判定 ---
+                                // ドライブでディフェンスを振り切ったので、シュートやパスのチャンスが生まれる
+
+                                // 1. シュート判定 (高確率)
+                                float newDistanceToGoal = Vector2.Distance(new Vector2(ballHolder.Pos.X, ballHolder.Pos.Y), new Vector2(targetGoal.X, targetGoal.Y));
+                                if (newDistanceToGoal <= ballHolder.ShootRange)
+                                {
+                                    // ドライブ後はディフェンダーを振り切っていると仮定し、高い確率でシュートを試みる
+                                    if (rng.Next(0, SuccessChanceMax) < ShootChanceAfterDrive)
+                                    {
+                                        return PerformShoot(ballHolder, duration, t);
+                                    }
+                                }
+
+                                // 2. パス判定 (シュートしなかった場合)
+                                var openTeammate = FindMostOpenTeammate(ballHolder, isPlayerTeamAttacking);
+                                if (openTeammate != null)
+                                {
+                                    // オープンな味方がいればパス
+                                    var oldBallHolder = ballHolder;
+                                    oldBallHolder.HasBall = false;
+                                    openTeammate.HasBall = true;
+                                    ballHolder = openTeammate;
+                                    matchEvents.Add(new PlayerActionEvent(elapsedTime + t, oldBallHolder.Id, "Pass", oldBallHolder.Pos, openTeammate.Id));
+                                }
+                                else
+                                {
+                                    // パス相手がいない場合は自分でさらにドリブル
+                                    MoveBallHolder(ballHolder, false, targetGoal, t); // ドライブ後はプレッシャーがないと仮定
+                                }
+                                continue; // この時間ステップでのアクションは完了
                             }
                             else
                             {
@@ -767,6 +806,33 @@ namespace BBSim.Vcontainer
             }
             idealSpot = new Position(idealX, idealY);
             return idealSpot;
+        }
+
+        /// <summary>
+        /// 最もオープンな味方を探します。ドライブ後のパスなどに使用します。
+        /// </summary>
+        private Student FindMostOpenTeammate(Student ballHolder, bool isPlayerTeamAttacking)
+        {
+            var teammates = GetTeam(ballHolder, includeSelf: false);
+            if (!teammates.Any()) return null;
+
+            var teammateDefenseAssignments = isPlayerTeamAttacking ? opponentDefenseAssignments : playerDefenseAssignments;
+
+            var openTeammates = teammates
+                .Select(teammate =>
+                {
+                    var defender = teammateDefenseAssignments.FirstOrDefault(kvp => kvp.Value == teammate).Key;
+                    float distanceToDefender = 100f;
+                    if (defender != null)
+                    {
+                        distanceToDefender = Vector2.Distance(new Vector2(teammate.Pos.X, teammate.Pos.Y), new Vector2(defender.Pos.X, defender.Pos.Y));
+                    }
+                    return new { Player = teammate, Openness = distanceToDefender };
+                })
+                .OrderByDescending(x => x.Openness);
+
+            // ドライブ後はディフェンスが収縮するので、ある程度オープンな選手(3m以上)がいればパス対象とする
+            return openTeammates.FirstOrDefault(x => x.Openness > MinOpenDistanceForPass)?.Player;
         }
 
         /// <summary>
