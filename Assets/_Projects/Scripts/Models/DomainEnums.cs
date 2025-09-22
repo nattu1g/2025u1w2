@@ -12,4 +12,13 @@ namespace BBSim.Models
         Rest,
         StrengthUp, StaminaUp, FateUp,
     }
+
+    public enum BasketballPosition
+    {
+        PointGuard,
+        ShootingGuard,
+        SmallForward,
+        PowerForward,
+        Center
+    }
 }

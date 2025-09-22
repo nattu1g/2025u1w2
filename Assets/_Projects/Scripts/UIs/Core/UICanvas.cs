@@ -33,9 +33,13 @@ namespace BBSim.UIs.Core
         public CalendarView CalendarView => _calendarView;
         [Title("試合画面")]
         [LabelText("画面本体")]
+        [SerializeField] private GameView _gameView;
+        public GameView GameView => _gameView;
+
+        [Title("バトル画面")]
+        [LabelText("画面本体")]
         [SerializeField] private BattleView _battleView;
         public BattleView BattleView => _battleView;
-
 
         // public override void Initialize()
         // {
@@ -45,6 +49,7 @@ namespace BBSim.UIs.Core
         {
             // 各Viewを基底クラスのDictionaryに登録する
             RegisterView(_optionView);
+            RegisterView(_gameView);
             RegisterView(_battleView);
             RegisterView(_calendarView);
             RegisterView(_messageView);

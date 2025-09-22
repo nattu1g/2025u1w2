@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Alchemy.Inspector;
+using BBSim.Features;
 using BBSim.Models;
 using BBSim.UIs.Core;
 using BBSim.Vcontainer;
@@ -24,6 +25,8 @@ namespace Scripts.Vcontainer.Installer
         [Title("LIFETIME")]
         [LabelText("UICanvas")]
         [SerializeField] private UICanvas _uiCanvas;
+        [LabelText("MatchAssembly")]
+        [SerializeField] private MatchAssembly _matchAssembly;
         // [LabelText("PlayerInputObject")]
         // [SerializeField] private InputBall _inputBall;
 
@@ -73,6 +76,8 @@ namespace Scripts.Vcontainer.Installer
                  .As<IStartable, PlayerClubPresenter>(); // ★ .As<...> を追加
             builder.Register<SchedulePresenter>(Lifetime.Singleton)
                  .As<IStartable, SchedulePresenter>();
+            builder.Register<MatchPresenter>(Lifetime.Singleton)
+                 .As<IStartable, MatchPresenter>();
 
             // Commonから汎用クラスを登録
             builder.Register<GameInitializeUseCase>(Lifetime.Singleton);
@@ -82,6 +87,7 @@ namespace Scripts.Vcontainer.Installer
 
             // Serializeしたコンポーネント
             builder.RegisterComponent(_uiCanvas);
+            builder.RegisterComponent(_matchAssembly);
 
             // 初期化の起点となる唯一のEntryPoint
             builder.RegisterEntryPoint<ApplicationInitializer>();

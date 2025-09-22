@@ -5,6 +5,8 @@ using BBSim.Settings;
 using BBSim.UIs.Core;
 using Common.UIs.Component;
 using MessagePipe;
+using BBSim.Vcontainer.Presenter;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using BBSim.Vcontainer.UseCase;
 using Common.Events;
@@ -18,7 +20,7 @@ namespace BBSim.Vcontainer
         readonly UICanvas _uiCanvas;
         readonly TrainingUseCase _trainingUseCase;
         readonly TrainingSelectUseCase _trainingSelectUseCase;
-        readonly MatchSimulateUseCase _matchSimulateUseCase;
+        readonly MatchPresenter _matchPresenter;
         private readonly ComponentAssembly _componentAssembly;
 
 
@@ -26,7 +28,7 @@ namespace BBSim.Vcontainer
             UICanvas uiCanvas,
             TrainingUseCase trainingUseCase,
             TrainingSelectUseCase trainingSelectUseCase,
-            MatchSimulateUseCase matchSimulateUseCase,
+            MatchPresenter matchPresenter,
             ISubscriber<GameInitializedEvent> gameInitializedSubscriber,
             ISubscriber<WeekAdvancedEvent> weekAdvancedSubscriber,
             ComponentAssembly componentAssembly
@@ -35,7 +37,7 @@ namespace BBSim.Vcontainer
             _uiCanvas = uiCanvas;
             _trainingUseCase = trainingUseCase;
             _trainingSelectUseCase = trainingSelectUseCase;
-            _matchSimulateUseCase = matchSimulateUseCase;
+            _matchPresenter = matchPresenter;
             _componentAssembly = componentAssembly;
 
 
@@ -80,10 +82,16 @@ namespace BBSim.Vcontainer
             button.onClickCallback = null;
             button.onClickCallback = () =>
             {
-                // UseCaseを呼び出すだけ。週の進行やUI更新は行わない。
-                // UseCaseが処理の最後にWeekAdvancedEventを発行することを期待する。
-                _matchSimulateUseCase.RunMatch();
+                // async voidを避けるため、UniTaskVoidメソッドを呼び出してForgetする
+                HandleMatchStartAsync().Forget();
             };
+        }
+
+        private async UniTaskVoid HandleMatchStartAsync()
+        {
+            // MatchPresenterに試合の再生を開始させる
+            _uiCanvas.TrainingSelectView.gameObject.SetActive(false); // 再生中は選択画面を非表示に
+            await _matchPresenter.StartMatchPlaybackAsync();
         }
 
         //// <summary>
