@@ -5,6 +5,7 @@ using App.Vcontainer.UseCase;
 using Common.Features.Save;
 using Common.Vcontainer.EntryPoint;
 using Common.Vcontainer.Handler;
+using Common.Vcontainer.UseCase.Audio;
 using Common.Vcontainer.UseCase.Base;
 using MessagePipe;
 using UnityEngine;
@@ -36,7 +37,7 @@ namespace Scripts.Vcontainer.Installer
             // builder.Register<StudentEntity>(Lifetime.Singleton);
 
             // UseCase
-            // builder.Register<AudioUseCase>(Lifetime.Singleton);
+            builder.Register<AudioUseCase>(Lifetime.Singleton);
 
             // App固有のUseCaseを「IInitializableUseCase」として登録する
             builder.Register<AppLoadUseCase>(Lifetime.Singleton)
