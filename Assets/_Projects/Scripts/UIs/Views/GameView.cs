@@ -3,7 +3,7 @@ using Common.UIs.Core;
 using TMPro;
 using UnityEngine;
 
-namespace BBSim.UIs.Views
+namespace App.UIs.Views
 {
     public class GameView : BaseUIView
     {

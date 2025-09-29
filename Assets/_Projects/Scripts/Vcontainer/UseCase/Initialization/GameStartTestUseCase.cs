@@ -1,10 +1,10 @@
-using BBSim.Events;
+using App.Events;
 using Common.Vcontainer.UseCase.Base;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using UnityEngine;
 
-namespace BBSim.Vcontainer.UseCase
+namespace App.Vcontainer.UseCase
 {
     public class GameStartTestUseCase : IInitializableUseCase
     {

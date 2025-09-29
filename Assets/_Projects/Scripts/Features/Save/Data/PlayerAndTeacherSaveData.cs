@@ -1,5 +1,5 @@
 
-namespace BBSim.Features.Save
+namespace App.Features.Save
 {
     /// <summary>
     /// プレイヤーの生徒データと先生データをまとめて保存するためのクラス

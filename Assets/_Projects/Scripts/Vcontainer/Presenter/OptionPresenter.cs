@@ -1,6 +1,6 @@
 using System;
-using BBSim.UIs.Core;
-using BBSim.Vcontainer.UseCase;
+using App.UIs.Core;
+using App.Vcontainer.UseCase;
 using Common.Vcontainer.Handler;
 using Common.Vcontainer.UseCase.Audio;
 using Cysharp.Threading.Tasks;
@@ -8,14 +8,14 @@ using R3;
 using UnityEngine;
 using VContainer.Unity;
 
-namespace BBSim.Vcontainer.Presenter
+namespace App.Vcontainer.Presenter
 {
     // IInitializableを削除し、IDisposableのみを実装する
     public class OptionPresenter : IDisposable, IStartable
     {
         private readonly UICanvas _uiCanvas;
         private readonly AudioUseCase _audioUseCase;
-        private readonly BbsimSaveUseCase _bbsimSaveUseCase;
+        private readonly AppSaveUseCase _AppSaveUseCase;
         private readonly ButtonHandler _buttonHandler;
         private readonly CompositeDisposable _disposables = new();
 
@@ -23,12 +23,12 @@ namespace BBSim.Vcontainer.Presenter
         public OptionPresenter(
             UICanvas uiCanvas,
             AudioUseCase audioUseCase,
-            BbsimSaveUseCase saveUseCase,
+            AppSaveUseCase saveUseCase,
             ButtonHandler buttonHandler)
         {
             _uiCanvas = uiCanvas;
             _audioUseCase = audioUseCase;
-            _bbsimSaveUseCase = saveUseCase;
+            _AppSaveUseCase = saveUseCase;
             _buttonHandler = buttonHandler;
 
             var optionView = _uiCanvas.OptionView;
@@ -62,7 +62,7 @@ namespace BBSim.Vcontainer.Presenter
             {
                 _uiCanvas.Hide(optionView);
                 await _audioUseCase.PlayUISound("se1");
-                await _bbsimSaveUseCase.SaveAllDataAsync();
+                await _AppSaveUseCase.SaveAllDataAsync();
             });
         }
 

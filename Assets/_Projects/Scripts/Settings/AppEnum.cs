@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BBSim.Settings
+namespace App.Settings
 {
     public enum WeekType
     {

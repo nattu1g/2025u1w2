@@ -1,10 +1,11 @@
 using Alchemy.Inspector;
 using UnityEngine;
 
-namespace BBSim.Features
+namespace App.Features
 {
     /// <summary>
     /// 試合の可視化に必要なコンポーネントをアセンブルするクラス
+    /// ヒエラルキーに設置して、LifeTimeScapeに読み込ませる
     /// </summary>
     public class MatchAssembly : MonoBehaviour
     {

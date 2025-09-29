@@ -1,7 +1,6 @@
-using BBSim.Models;
 using UnityEngine;
 
-namespace BBSim.SOs
+namespace App.SOs
 {
     [CreateAssetMenu(fileName = "ClubItemCard", menuName = "ScriptableObjects/ClubItemCard", order = 1)]
     public class ClubItemCard : ScriptableObject
@@ -11,7 +10,7 @@ namespace BBSim.SOs
         public string readingName;
         public int attack;
         public Sprite sprite;
-        public ClassType classType;
+        // public ClassType classType;
         // public List<Club> clubs;
         // public Rarity rarity;
         // public List<Tag> tags;

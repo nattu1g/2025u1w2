@@ -1,4 +1,4 @@
-namespace BBSim.Events
+namespace App.Events
 {
     /// <summary>
     /// ゲーム内の週が進行したことを通知するイベント

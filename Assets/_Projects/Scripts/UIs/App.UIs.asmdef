@@ -1,0 +1,22 @@
+{
+    "name": "App.UIs",
+    "rootNamespace": "App.UIs",
+    "references": [
+        "Alchemy",
+        "LitMotion",
+        "LitMotion.Extensions",
+        "Unity.TextMeshPro",
+        "UniTask.TextMeshPro",
+        "Common.UIs",
+        "App.Features"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
