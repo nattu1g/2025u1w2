@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <!-- オプション画面本体（初期状態は非表示） -->
+    <ui:VisualElement name="option-ui-base" class="option-view" style="display: none;">
+        <ui:VisualElement name="option-ui-background" class="ui-background"/>
+        <ui:VisualElement class="option-content-container">
+            <ui:Label text="オプション" class="option-title"/>
+            
+            <!-- BGM設定 -->
+            <ui:VisualElement class="option-row">
+                <ui:Label text="BGM音量:" class="option-label"/>
+                <ui:Button name="bgm-minus-button" text="-" class="option-button"/>
+                <ui:Label name="bgm-value-label" text="5" class="option-value"/>
+                <ui:Button name="bgm-plus-button" text="+" class="option-button"/>
+            </ui:VisualElement>
+            
+            <!-- SE設定 -->
+            <ui:VisualElement class="option-row">
+                <ui:Label text="SE音量:" class="option-label"/>
+                <ui:Button name="se-minus-button" text="-" class="option-button"/>
+                <ui:Label name="se-value-label" text="5" class="option-value"/>
+                <ui:Button name="se-plus-button" text="+" class="option-button"/>
+            </ui:VisualElement>
+            
+            <!-- 閉じるボタン -->
+            <ui:Button name="option-hide-button" text="閉じる" class="option-close-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    
+    <!-- 常に表示する要素（設定ボタン） -->
+    <ui:Button name="option-show-button" text="⚙" class="option-show-button"/>
+</ui:UXML>

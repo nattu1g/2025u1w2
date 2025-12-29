@@ -18,8 +18,10 @@ namespace Scripts.Vcontainer.Installer
     public class MainLifeTimeScope : LifetimeScope
     {
         [Title("LIFETIME")]
-        [LabelText("UICanvas")]
-        [SerializeField] private UICanvas _uiCanvas;
+        // uGUI版（段階的移行中）
+        // [LabelText("UICanvas")]
+        // [SerializeField] private UICanvas _uiCanvas;
+
         // [LabelText("MatchAssembly")]
         // [SerializeField] private MatchAssembly _matchAssembly;
         // [LabelText("PlayerInputObject")]
@@ -32,7 +34,11 @@ namespace Scripts.Vcontainer.Installer
             builder.RegisterMessagePipe();
 
             // Handler (汎用的なものや、未整理のもの)
-            builder.Register<ButtonHandler>(Lifetime.Singleton);
+            // uGUI版（段階的移行中）
+            // builder.Register<ButtonHandler>(Lifetime.Singleton);
+
+            // UI Toolkit版
+            builder.Register<UIToolkitButtonHandler>(Lifetime.Singleton);
 
             // Entity
             // builder.Register<StudentEntity>(Lifetime.Singleton);
@@ -58,9 +64,8 @@ namespace Scripts.Vcontainer.Installer
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
 
-            // Serializeしたコンポーネント
-            builder.RegisterComponent(_uiCanvas);
-            // builder.RegisterComponent(_matchAssembly);
+            // UI Toolkit版のCanvasを登録
+            builder.RegisterComponentInHierarchy<UIToolkitCanvas>();
 
             // 初期化の起点となる唯一のEntryPoint
             builder.RegisterEntryPoint<MainSceneInitializer>();

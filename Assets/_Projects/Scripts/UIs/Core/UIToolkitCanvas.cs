@@ -1,3 +1,5 @@
+using App.UIs.Views;
+using Common.UIs.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,30 +8,43 @@ namespace App.UIs.Core
     /// <summary>
     /// UI Toolkit専用のキャンバス
     /// </summary>
-    public class UIToolkitCanvas : MonoBehaviour
+    public class UIToolkitCanvas : BaseUIToolkitCanvas
     {
-        [SerializeField] private UIDocument _uiDocument;
-
         private VisualElement _root;
         private VisualElement _battleView;
         private VisualElement _resultView;
         private VisualElement _stageSelectView;
         private VisualElement _victoryView;
 
+        // UI Toolkit版のView
+        private OptionViewUIToolkit _optionView;
+        public OptionViewUIToolkit OptionView => _optionView;
+
         private void Awake()
         {
-            if (_uiDocument == null)
+            if (UiDocument == null)
             {
-                _uiDocument = GetComponent<UIDocument>();
+                Debug.LogError("UIDocument is not assigned!");
+                return;
             }
 
-            _root = _uiDocument.rootVisualElement;
+            _root = UiDocument.rootVisualElement;
 
-            // Viewの参照を取得
+            // 既存のViewの参照を取得
             _battleView = _root.Q<VisualElement>("BattleView");
             _resultView = _root.Q<VisualElement>("ResultView");
             _stageSelectView = _root.Q<VisualElement>("StageSelectView");
             _victoryView = _root.Q<VisualElement>("VictoryView");
+
+            // OptionViewUIToolkitの初期化
+            _optionView = new OptionViewUIToolkit();
+            _optionView.Initialize(_root);
+            RegisterView(_optionView);
+        }
+
+        private void OnDestroy()
+        {
+            _optionView?.Dispose();
         }
 
         /// <summary>
@@ -37,8 +52,14 @@ namespace App.UIs.Core
         /// </summary>
         public void ShowBattleView()
         {
-            _battleView.style.display = DisplayStyle.Flex;
-            _resultView.style.display = DisplayStyle.None;
+            if (_battleView != null)
+            {
+                _battleView.style.display = DisplayStyle.Flex;
+            }
+            if (_resultView != null)
+            {
+                _resultView.style.display = DisplayStyle.None;
+            }
         }
 
         /// <summary>
@@ -46,8 +67,14 @@ namespace App.UIs.Core
         /// </summary>
         public void ShowResultView()
         {
-            _battleView.style.display = DisplayStyle.None;
-            _resultView.style.display = DisplayStyle.Flex;
+            if (_battleView != null)
+            {
+                _battleView.style.display = DisplayStyle.None;
+            }
+            if (_resultView != null)
+            {
+                _resultView.style.display = DisplayStyle.Flex;
+            }
         }
 
         /// <summary>
@@ -75,10 +102,10 @@ namespace App.UIs.Core
         /// </summary>
         public void ShowStageSelectView()
         {
-            _battleView.style.display = DisplayStyle.None;
-            _resultView.style.display = DisplayStyle.None;
-            _victoryView.style.display = DisplayStyle.None;
-            _stageSelectView.style.display = DisplayStyle.Flex;
+            if (_battleView != null) _battleView.style.display = DisplayStyle.None;
+            if (_resultView != null) _resultView.style.display = DisplayStyle.None;
+            if (_victoryView != null) _victoryView.style.display = DisplayStyle.None;
+            if (_stageSelectView != null) _stageSelectView.style.display = DisplayStyle.Flex;
         }
 
         /// <summary>
@@ -86,10 +113,10 @@ namespace App.UIs.Core
         /// </summary>
         public void ShowVictoryView()
         {
-            _battleView.style.display = DisplayStyle.None;
-            _resultView.style.display = DisplayStyle.None;
-            _stageSelectView.style.display = DisplayStyle.None;
-            _victoryView.style.display = DisplayStyle.Flex;
+            if (_battleView != null) _battleView.style.display = DisplayStyle.None;
+            if (_resultView != null) _resultView.style.display = DisplayStyle.None;
+            if (_stageSelectView != null) _stageSelectView.style.display = DisplayStyle.None;
+            if (_victoryView != null) _victoryView.style.display = DisplayStyle.Flex;
         }
     }
 }

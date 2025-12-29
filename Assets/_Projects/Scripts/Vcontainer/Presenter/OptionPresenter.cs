@@ -1,5 +1,6 @@
 using System;
 using App.UIs.Core;
+using App.UIs.Views;
 using App.Vcontainer.UseCase;
 using Common.Vcontainer.Handler;
 using Common.Vcontainer.UseCase.Audio;
@@ -10,69 +11,96 @@ using VContainer.Unity;
 
 namespace App.Vcontainer.Presenter
 {
-    // IInitializableを削除し、IDisposableのみを実装する
+    /// <summary>
+    /// オプション画面のPresenter（UI Toolkit版）
+    /// </summary>
     public class OptionPresenter : IDisposable, IStartable
     {
-        private readonly UICanvas _uiCanvas;
+        private readonly UIToolkitCanvas _uiToolkitCanvas;
         private readonly AudioUseCase _audioUseCase;
-        private readonly AppSaveUseCase _AppSaveUseCase;
-        private readonly ButtonHandler _buttonHandler;
+        private readonly AppSaveUseCase _appSaveUseCase;
+        private readonly UIToolkitButtonHandler _buttonHandler;
         private readonly CompositeDisposable _disposables = new();
 
-        // コンストラクタで全ての初期化処理を行う
+        private OptionViewUIToolkit _optionView;
+
+        // コンストラクタで依存性を注入
         public OptionPresenter(
-            UICanvas uiCanvas,
+            UIToolkitCanvas uiToolkitCanvas,
             AudioUseCase audioUseCase,
             AppSaveUseCase saveUseCase,
-            ButtonHandler buttonHandler)
+            UIToolkitButtonHandler buttonHandler)
         {
-            _uiCanvas = uiCanvas;
+            _uiToolkitCanvas = uiToolkitCanvas;
             _audioUseCase = audioUseCase;
-            _AppSaveUseCase = saveUseCase;
+            _appSaveUseCase = saveUseCase;
             _buttonHandler = buttonHandler;
+        }
 
-            var optionView = _uiCanvas.OptionView;
+        public void Start()
+        {
+            // アーキテクチャガイドラインに従い、Start()でViewを取得
+            _optionView = _uiToolkitCanvas.OptionView;
+
+            if (_optionView == null)
+            {
+                Debug.LogError("OptionView is null in OptionPresenter.Start()");
+                return;
+            }
 
             // --- UseCaseのデータ変更を購読し、UIを更新する ---
             _audioUseCase.BgmVolume
-                .Subscribe(volume => optionView.SetBgmText((int)volume))
+                .Subscribe(volume => _optionView.SetBgmText((int)volume))
                 .AddTo(_disposables);
 
             _audioUseCase.SeVolume
-                .Subscribe(volume => optionView.SetSeText((int)volume))
+                .Subscribe(volume => _optionView.SetSeText((int)volume))
                 .AddTo(_disposables);
 
             // --- UIイベントを購読し、UseCaseを呼び出す ---
-            _buttonHandler.SetupActionButton(optionView.BgmPlusButton, _audioUseCase.BgmUp);
-            _buttonHandler.SetupActionButton(optionView.BgmMinusButton, _audioUseCase.BgmDown);
+            _buttonHandler.SetupActionButton(_optionView.BgmPlusButton, async () =>
+            {
+                _audioUseCase.BgmUp();
+                await UniTask.Yield();
+            });
 
-            // SE再生はUseCaseの責務になったため、Presenterはメソッドを呼び出すだけ
-            _buttonHandler.SetupActionButton(optionView.SePlusButton, _audioUseCase.SeUp);
-            _buttonHandler.SetupActionButton(optionView.SeMinusButton, _audioUseCase.SeDown);
+            _buttonHandler.SetupActionButton(_optionView.BgmMinusButton, async () =>
+            {
+                _audioUseCase.BgmDown();
+                await UniTask.Yield();
+            });
+
+            _buttonHandler.SetupActionButton(_optionView.SePlusButton, async () =>
+            {
+                _audioUseCase.SeUp();
+                await UniTask.Yield();
+            });
+
+            _buttonHandler.SetupActionButton(_optionView.SeMinusButton, async () =>
+            {
+                _audioUseCase.SeDown();
+                await UniTask.Yield();
+            });
 
             // オプション開閉ボタン
-            _buttonHandler.SetupActionButton(optionView.ShowButton, async () =>
+            _buttonHandler.SetupActionButton(_optionView.ShowButton, async () =>
             {
-                _uiCanvas.Show(optionView);
-                // UI効果音の再生もUseCaseに依頼する
+                _uiToolkitCanvas.Show(_optionView);
                 await _audioUseCase.PlayUISound("se1");
             });
 
-            _buttonHandler.SetupActionButton(optionView.HideButton, async () =>
+            _buttonHandler.SetupActionButton(_optionView.HideButton, async () =>
             {
-                _uiCanvas.Hide(optionView);
+                _uiToolkitCanvas.Hide(_optionView);
                 await _audioUseCase.PlayUISound("se1");
-                await _AppSaveUseCase.SaveAllDataAsync();
+                await _appSaveUseCase.SaveAllDataAsync();
             });
         }
 
         public void Dispose()
         {
             _disposables.Dispose();
-        }
-
-        public void Start()
-        {
+            _buttonHandler?.Dispose();
         }
     }
 }

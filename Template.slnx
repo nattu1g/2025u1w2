@@ -10,10 +10,10 @@
   <Project Path="App.Vcontainer.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Common.Editor.csproj" />
-  <Project Path="App.UIs.csproj" />
   <Project Path="App.Settings.csproj" />
   <Project Path="Common.Events.csproj" />
   <Project Path="App.Editor.csproj" />
   <Project Path="App.SOs.csproj" />
+  <Project Path="App.UIs.csproj" />
   <Project Path="App.Features.csproj" />
 </Solution>
