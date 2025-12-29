@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Template.slnx"
+    "dotnet.defaultSolution": "202512u1w2.slnx"
 }
