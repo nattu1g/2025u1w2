@@ -1,6 +1,28 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <!-- USSファイルの参照 -->
     <Style src="../USS/OptionView.uss"/>
+    <Style src="../USS/GameView.uss"/>
+    
+    <!-- GameView定義（初期状態は表示） -->
+    <ui:VisualElement name="game-ui-base" class="game-view">
+        <!-- 上部UI: ポイント表示 -->
+        <ui:VisualElement class="top-panel">
+            <ui:Label name="points-label" text="Points: 0" class="points-label"/>
+        </ui:VisualElement>
+        
+        <!-- 中央: 3Dゲーム表示エリア（UIは透明） -->
+        <ui:VisualElement class="game-area"/>
+        
+        <!-- 下部UI: コイン投下ボタン -->
+        <ui:VisualElement class="bottom-panel">
+            <ui:Button name="drop-normal-coin-button" text="通常コイン&#10;(10P)" class="coin-button normal-coin"/>
+            <ui:Button name="drop-dense-coin-button" text="高密度コイン&#10;(50P)" class="coin-button dense-coin"/>
+            <ui:Button name="drop-cooling-coin-button" text="冷却コイン&#10;(100P)" class="coin-button cooling-coin"/>
+        </ui:VisualElement>
+        
+        <!-- 右下: フォールドボタン -->
+        <ui:Button name="fold-button" text="フォールド" class="fold-button"/>
+    </ui:VisualElement>
     
     <!-- OptionView定義（初期状態は非表示） -->
     <ui:VisualElement name="option-ui-base" class="option-view" style="display: none;">

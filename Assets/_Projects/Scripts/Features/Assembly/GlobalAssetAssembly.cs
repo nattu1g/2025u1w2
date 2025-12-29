@@ -9,21 +9,9 @@ namespace App.Features
     /// </summary>
     public class GlobalAssetAssembly : MonoBehaviour
     {
-        [Header("Match Visualization")]
-        [LabelText("プレイヤーPrefab")]
-        [SerializeField] private GameObject _playerPrefab;
-        public GameObject PlayerPrefab => _playerPrefab;
-
-        [LabelText("OpponentPrefab")]
-        [SerializeField] private GameObject _opponentPrefab;
-        public GameObject OpponentPrefab => _opponentPrefab;
-
-        [LabelText("プレイヤーの親Transform")]
-        [SerializeField] private Transform _playersParent;
-        public Transform PlayersParent => _playersParent;
-
-        [LabelText("ボールPrefab")]
-        [SerializeField] private GameObject _ballPrefab;
-        public GameObject BallPrefab => _ballPrefab;
+        [Header("Water Tank Game")]
+        [LabelText("コインPrefab")]
+        [SerializeField] private GameObject _coinPrefab;
+        public GameObject CoinPrefab => _coinPrefab;
     }
 }

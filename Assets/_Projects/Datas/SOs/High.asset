@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843b7a1aea29043eaa4764094619df1e, type: 3}
+  m_Name: High
+  m_EditorClassIdentifier: App.SOs::App.SOs.CoinDefinition
+  _coinName: High
+  _description: 
+  _price: 0
+  _expansionRate: 1
+  _coinPrefab: {fileID: 3899713252433954096, guid: e3f00d6b17d654c89825168c263d98be, type: 3}
+  _icon: {fileID: 21300000, guid: 6d37c786b3231bf4b8d7776816653b88, type: 3}

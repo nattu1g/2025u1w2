@@ -1,8 +1,12 @@
 using Alchemy.Inspector;
+using App.Features;
+using App.Features.WaterTank.Coin;
 using App.UIs.Core;
+using App.Vcontainer.Entity;
 using App.Vcontainer.EntryPoint;
 using App.Vcontainer.Presenter;
 using App.Vcontainer.UseCase;
+using App.Vcontainer.UseCase.RunTime;
 using Common.Features.Save;
 using Common.Vcontainer.EntryPoint;
 using Common.Vcontainer.Handler;
@@ -45,6 +49,7 @@ namespace Scripts.Vcontainer.Installer
 
             // UseCase - 基本システム
             builder.Register<AudioUseCase>(Lifetime.Singleton);
+            builder.Register<MainGameInitializeUseCase>(Lifetime.Singleton);
 
             builder.Register<AudioInitializeUseCase>(Lifetime.Singleton)
                 .As<IInitializableUseCase>();
@@ -54,12 +59,22 @@ namespace Scripts.Vcontainer.Installer
                 .As<IInitializableUseCase>();
             builder.Register<AppSaveUseCase>(Lifetime.Singleton);
 
-            // TODO: 水槽ゲーム用のUseCase/Presenterをここに追加
-            // 例: builder.Register<WaterTankGameUseCase>(Lifetime.Singleton);
-            // 例: builder.Register<WaterTankPresenter>(Lifetime.Singleton).As<IStartable>();
+            // Entity - ゲーム状態管理
+            builder.Register<GameStateEntity>(Lifetime.Singleton);
+
+            // UseCase - ゲームロジック
+            builder.Register<CoinDropUseCase>(Lifetime.Singleton);
+
+            // Presenter
+            builder.Register<OptionPresenter>(Lifetime.Singleton)
+                .As<IStartable>();
+            builder.Register<GamePresenterUIToolkit>(Lifetime.Singleton)
+                .As<IStartable>();
 
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
+            builder.RegisterComponentInHierarchy<CoinSpawner>();
+            builder.RegisterComponentInHierarchy<GlobalAssetAssembly>();
 
             // UI Toolkit版のCanvasを登録
             builder.RegisterComponentInHierarchy<UIToolkitCanvas>();

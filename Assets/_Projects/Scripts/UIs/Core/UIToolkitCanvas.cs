@@ -20,6 +20,9 @@ namespace App.UIs.Core
         private OptionViewUIToolkit _optionView;
         public OptionViewUIToolkit OptionView => _optionView;
 
+        private GameViewUIToolkit _gameView;
+        public GameViewUIToolkit GameView => _gameView;
+
         private void Awake()
         {
             if (UiDocument == null)
@@ -40,11 +43,17 @@ namespace App.UIs.Core
             _optionView = new OptionViewUIToolkit();
             _optionView.Initialize(_root);
             RegisterView(_optionView);
+
+            // GameViewUIToolkitの初期化
+            _gameView = new GameViewUIToolkit();
+            _gameView.Initialize(_root);
+            RegisterView(_gameView);
         }
 
         private void OnDestroy()
         {
             _optionView?.Dispose();
+            _gameView?.Dispose();
         }
 
         /// <summary>
