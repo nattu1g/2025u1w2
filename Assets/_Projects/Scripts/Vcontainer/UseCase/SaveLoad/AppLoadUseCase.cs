@@ -4,6 +4,7 @@ using App.Features.Save;
 using App.Settings;
 using Common.Features;
 using Common.Features.Save;
+using Common.Vcontainer.Entity;
 using Common.Vcontainer.UseCase.Base;
 using Common.Vcontainer.UseCase.SaveLoad;
 using Cysharp.Threading.Tasks;
@@ -18,34 +19,20 @@ namespace App.Vcontainer.UseCase
     {
         public int Order => 0;
 
-        // readonly VolumeEntity _volumeEntity;
-        // readonly StudentEntity _studentEntity;
-        // readonly TeacherEntity _teacherEntity;
-        // readonly EventItemEntity _eventItemEntity;
-        // readonly ClubItemEntity _clubItemEntity;
-        // readonly ComponentAssembly _componentAssembly;
+        readonly VolumeEntity _volumeEntity;
+        readonly ComponentAssembly _componentAssembly;
 
         public AppLoadUseCase(
-            // VolumeEntity volumeEntity,
-            // StudentEntity studentEntity,
-            // TeacherEntity teacherEntity,
-            // EventItemEntity eventItemEntity,
-            // ClubItemEntity clubItemEntity,
-            // ComponentAssembly componentAssembly,
+            VolumeEntity volumeEntity,
+            ComponentAssembly componentAssembly,
             SaveManager saveManager
             ) : base(saveManager)
         {
-            // _volumeEntity = volumeEntity;
-            // _studentEntity = studentEntity;
-            // _teacherEntity = teacherEntity;
-            // _eventItemEntity = eventItemEntity;
-            // _clubItemEntity = clubItemEntity;
-            // _componentAssembly = componentAssembly;
+            _volumeEntity = volumeEntity;
+            _componentAssembly = componentAssembly;
         }
         public async UniTask InitializeAsync()
         {
-            Debug.Log("[AppLoadUseCase][InitializeAsync] Start");
-
             await LoadAllDataAsync();
         }
         public override async UniTask LoadAllDataAsync()
@@ -65,13 +52,14 @@ namespace App.Vcontainer.UseCase
             }
             else
             {
+                Debug.LogWarning("[AppLoadUseCase] No saved data found, using defaults");
                 loadedSettings = new AppSettingsData(); // デフォルト値
             }
 
             if (loadedSettings != null && loadedSettings.GameSettings != null)
             {
-                // _volumeEntity.SetBGMVolume(loadedSettings.GameSettings._bgmVolume, _componentAssembly.AudioMixer).Forget();
-                // _volumeEntity.SetSEVolume(loadedSettings.GameSettings._seVolume, _componentAssembly.AudioMixer).Forget();
+                await _volumeEntity.SetBGMVolume(loadedSettings.GameSettings._bgmVolume, _componentAssembly.AudioMixer);
+                await _volumeEntity.SetSEVolume(loadedSettings.GameSettings._seVolume, _componentAssembly.AudioMixer);
             }
             else
             {

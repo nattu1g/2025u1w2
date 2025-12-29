@@ -7,7 +7,7 @@ namespace App.Features
     /// 試合の可視化に必要なコンポーネントをアセンブルするクラス
     /// ヒエラルキーに設置して、LifeTimeScapeに読み込ませる
     /// </summary>
-    public class MatchAssembly : MonoBehaviour
+    public class GlobalAssetAssembly : MonoBehaviour
     {
         [Header("Match Visualization")]
         [LabelText("プレイヤーPrefab")]
