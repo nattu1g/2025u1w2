@@ -2,7 +2,7 @@
     "name": "App.SOs",
     "rootNamespace": "App.SOs",
     "references": [
-        "BBSim.Models"
+        "Alchemy"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -43,9 +43,8 @@ namespace Scripts.Vcontainer.Installer
             // Entity
             // builder.Register<StudentEntity>(Lifetime.Singleton);
 
-            // UseCase
+            // UseCase - 基本システム
             builder.Register<AudioUseCase>(Lifetime.Singleton);
-            builder.Register<MainGameInitializeUseCase>(Lifetime.Singleton);
 
             builder.Register<AudioInitializeUseCase>(Lifetime.Singleton)
                 .As<IInitializableUseCase>();
@@ -54,12 +53,10 @@ namespace Scripts.Vcontainer.Installer
             builder.Register<AppLoadUseCase>(Lifetime.Singleton)
                 .As<IInitializableUseCase>();
             builder.Register<AppSaveUseCase>(Lifetime.Singleton);
-            // Presenter (通常のクラスとして登録)
-            builder.Register<OptionPresenter>(Lifetime.Singleton)
-                 .As<IStartable, OptionPresenter>();
 
-            // Commonから汎用クラスを登録
-            // builder.Register<GameInitializeUseCase>(Lifetime.Singleton);
+            // TODO: 水槽ゲーム用のUseCase/Presenterをここに追加
+            // 例: builder.Register<WaterTankGameUseCase>(Lifetime.Singleton);
+            // 例: builder.Register<WaterTankPresenter>(Lifetime.Singleton).As<IStartable>();
 
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
