@@ -15,6 +15,6 @@ MonoBehaviour:
   _coinName: "NORMAL\uFF40"
   _description: 
   _price: 0
-  _expansionRate: 10
+  _expansionRate: 0.1
   _coinPrefab: {fileID: 3899713252433954096, guid: e3f00d6b17d654c89825168c263d98be, type: 3}
   _icon: {fileID: 21300000, guid: 6d37c786b3231bf4b8d7776816653b88, type: 3}

@@ -414,3 +414,88 @@ waterTransform.localScale = newScale;
 - 見た目のCubeが膨張する
 - Colliderも一緒に大きくなる
 - 2回目以降のコイン接触も正しく検知される
+
+### 水の摩擦をなくす設定
+
+水同士の摩擦をなくすため、PhysicsMaterial2D（摩擦0）を自動設定するようにしました。
+
+**実装内容:**
+
+1. **SetupWaterPhysics()メソッドを追加**
+   - 親オブジェクト（Water）のCollider2Dを取得
+   - 摩擦0、反発0のPhysicsMaterial2Dを作成
+   - Collider2Dに適用
+
+2. **Awake()で自動設定**
+   - 初期化時に自動的にPhysicsMaterial2Dを設定
+   - 手動設定不要
+
+**コード:**
+```csharp
+PhysicsMaterial2D waterMaterial = new PhysicsMaterial2D("WaterMaterial")
+{
+    friction = 0f,      // 摩擦なし
+    bounciness = 0f     // 反発なし
+};
+waterCollider.sharedMaterial = waterMaterial;
+```
+
+**効果:**
+- 水同士が滑らかに動く
+- コインが水の上を滑りやすくなる
+- 物理演算がより自然になる
+
+---
+
+## 2025-12-30 の進捗
+
+### 画面伸縮対応の背景システム実装
+
+画面解像度やアスペクト比が変わっても、背景が常にカメラ全体を覆うように自動調整するシステムを実装しました。
+
+**実装内容:**
+
+1. **BackgroundScaler.cs の作成**
+   - カメラサイズに自動追従するスクリプト
+   - 画面サイズ変更時にリアルタイムで再調整
+   - 様々なアスペクト比に対応（16:9, 4:3, Free Aspectなど）
+
+2. **動作原理**
+   ```csharp
+   // カメラサイズを取得
+   float cameraHeight = camera.orthographicSize * 2f;
+   float cameraWidth = cameraHeight * camera.aspect;
+   
+   // スケールを計算（画面全体を覆う）
+   float scale = Max(cameraWidth/spriteWidth, cameraHeight/spriteHeight);
+   transform.localScale = new Vector3(scale, scale, 1f);
+   ```
+
+3. **Sorting Layer設定**
+   - Background (Order: -100) - 背景
+   - Default (Order: 0) - 水、水槽
+   - Coin (Order: 10) - コイン
+   - UI (Order: 100) - UI要素
+
+**ドキュメント作成:**
+- `BackgroundSetupGuide.md` - 背景設定ガイド
+- `BackgroundTroubleshooting.md` - トラブルシューティング
+
+**推奨設定:**
+- 背景画像: 2048x2048 以上（正方形が汎用性が高い）
+- Position: (0, 0, 0)
+- Camera Position: (0, 0, -10)
+- Sorting Layer: Background, Order: -100
+
+**効果:**
+- どんな画面サイズでも背景が自動調整される
+- アスペクト比が変わっても対応
+- 背景が途切れることがない
+
+### 今後の課題
+
+- [ ] ゲームオーバー判定の実装
+- [ ] フォールドシステムの実装
+- [ ] ショップシステムの実装
+- [ ] スコア表示の実装
+- [ ] サウンド・BGMの実装

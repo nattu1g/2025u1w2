@@ -30,6 +30,9 @@ namespace App.Features.WaterTank.Water
 
             Debug.Log($"WaterExpansion: Initial scale recorded for {waterTransform.name}: {_initialScale}");
 
+            // 親オブジェクトのCollider2Dに摩擦0のPhysicsMaterial2Dを設定
+            SetupWaterPhysics(waterTransform);
+
             // Colliderがトリガーであることを確認
             var collider = GetComponent<Collider2D>();
             if (collider == null)
@@ -39,6 +42,32 @@ namespace App.Features.WaterTank.Water
             else if (!collider.isTrigger)
             {
                 Debug.LogWarning("WaterExpansion: Colliderをトリガーに設定してください");
+            }
+        }
+        
+        /// <summary>
+        /// 水の物理設定（摩擦をなくす）
+        /// </summary>
+        private void SetupWaterPhysics(Transform waterTransform)
+        {
+            // 親オブジェクトのCollider2Dを取得
+            Collider2D waterCollider = waterTransform.GetComponent<Collider2D>();
+            
+            if (waterCollider != null && !waterCollider.isTrigger)
+            {
+                // 摩擦0のPhysicsMaterial2Dを作成
+                PhysicsMaterial2D waterMaterial = new PhysicsMaterial2D("WaterMaterial")
+                {
+                    friction = 0f,      // 摩擦なし
+                    bounciness = 0f     // 反発なし
+                };
+                
+                waterCollider.sharedMaterial = waterMaterial;
+                Debug.Log($"WaterExpansion: PhysicsMaterial2D (friction=0) applied to {waterTransform.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"WaterExpansion: Collider2D not found on {waterTransform.name} or is a trigger");
             }
         }
 
