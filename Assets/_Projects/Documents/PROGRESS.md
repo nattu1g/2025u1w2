@@ -499,3 +499,136 @@ waterCollider.sharedMaterial = waterMaterial;
 - [ ] ショップシステムの実装
 - [ ] スコア表示の実装
 - [ ] サウンド・BGMの実装
+
+---
+
+## 2025-12-30: フォールド（利確）システムの実装
+
+### 実装内容
+
+基準線とフォールド機能の完全実装を行いました。
+
+#### 1. 基準線表示システム
+
+**新規作成ファイル:**
+- `BaselineDisplay.cs`: 基準線の表示と高さ管理
+  - フォールド回数に応じて基準線の高さを自動調整
+  - GameConstants.GetBaselineHeight()から高さを取得
+  - Scene Viewでギズモ表示
+
+**基準線の高さ:**
+- 0回目フォールド: Y = 2.0
+- 1回目フォールド: Y = 2.5
+- 2回目フォールド: Y = 3.0
+- 3回目以降: Y = 3.5（最大）
+
+#### 2. 水位判定システム
+
+**新規作成ファイル:**
+- `WaterLevelChecker.cs`: 水位が基準線を超えたか判定
+  - **複数Waterオブジェクト対応**: 全てのWaterの中で最も高い位置を監視
+  - 基準線到達時にR3イベントを発行
+  - BaselineDisplayをVContainer経由で注入（Prefab対応）
+
+**VContainer統合:**
+- `WaterLevelCheckerInitializer.cs`: BaselineDisplayを自動注入するEntryPoint
+- `MainLifeTimeScope.cs`: WaterLevelCheckerとBaselineDisplayを登録
+
+#### 3. フォールド処理システム
+
+**新規作成ファイル:**
+- `FoldUseCase.cs`: フォールド処理のビジネスロジック
+  - CanFold(): 水位が基準線を超えているか確認
+  - ExecuteFold(): フォールド処理を実行
+    - ポイント計算（膨張回数 × 基本ポイント × 倍率）
+    - 全てのCoinオブジェクトを削除
+    - 全てのWaterオブジェクトのスケールをリセット
+    - フォールド回数をインクリメント
+    - 基準線の高さを更新
+
+**ポイント計算式:**
+```
+ポイント = 基本ポイント(10) × 膨張回数 × フォールド倍率
+```
+
+**フォールド倍率:**
+- 0回目: 1.5倍
+- 1回目: 2.0倍
+- 2回目: 2.5倍
+- 3回目以降: 3.0倍（最大）
+
+#### 4. GameStateEntity拡張
+
+**追加プロパティ:**
+- `FoldCount`: フォールド回数（ReactiveProperty）
+- `ExpansionCount`: 膨張回数（int）
+- `PendingPoints`: 含み益ポイント（ReactiveProperty）
+
+**追加メソッド:**
+- `IncrementExpansionCount()`: 膨張回数をインクリメント
+- `IncrementFoldCount()`: フォールド回数をインクリメント
+- `ResetExpansionCount()`: 膨張回数をリセット
+- `UpdatePendingPoints()`: 含み益ポイントを更新
+
+#### 5. UI統合
+
+**GamePresenterUIToolkit.cs:**
+- フォールドボタンを初期状態で無効化
+- WaterLevelCheckerのイベントを購読し、基準線到達時にボタンを有効化
+- WaterExpansion.OnWaterExpandedイベントを購読し、膨張回数をカウント
+- PendingPointsを購読し、含み益ポイントをリアルタイム表示
+
+**GameViewUIToolkit.cs:**
+- `SetFoldButtonEnabled()`: フォールドボタンの有効/無効を切り替え
+- `SetPendingPoints()`: 含み益ポイントを表示
+
+**UXML/USS:**
+- `Main.uxml`: `pending-points-label`を追加
+- `GameView.uss`: 含み益ポイント表示用のスタイルを追加（ライトグリーン色）
+
+#### 6. WaterExpansion拡張
+
+**追加機能:**
+- 静的イベント `OnWaterExpanded`: 水が膨張した時に発行
+- 膨張時にイベントを発行し、GamePresenterUIToolkitで膨張回数をカウント
+
+### 技術的な詳細
+
+#### Prefab対応設計
+
+WaterオブジェクトをPrefab化できるように、WaterLevelCheckerはヒエラルキーの別オブジェクトを参照せず、VContainer経由でBaselineDisplayを注入する設計にしました。
+
+#### 複数Waterオブジェクト対応
+
+WaterLevelCheckerは、タグまたは名前で全てのWaterオブジェクトを検索し、最も高い位置にあるWaterの上端を基準線と比較します。これにより、複数のWaterが存在する場合でも正しく動作します。
+
+#### イベント駆動設計
+
+- WaterExpansion → GamePresenterUIToolkit: 膨張イベント
+- WaterLevelChecker → GamePresenterUIToolkit: 基準線到達イベント
+- GameStateEntity → GameViewUIToolkit: ポイント更新イベント
+
+### 動作確認
+
+1. ゲーム開始時、フォールドボタンは無効
+2. コインを投下して水が膨張すると、含み益ポイントが表示される
+3. 水位が基準線を超えると、フォールドボタンが有効化される
+4. フォールドボタンを押すと:
+   - 含み益ポイントが確定ポイントに加算される
+   - 全てのCoinが削除される
+   - 全てのWaterのスケールがリセットされる
+   - 基準線が上昇する
+   - 含み益ポイントが0にリセットされる
+
+### コミットメッセージ
+
+```
+feat: フォールド（利確）システムの実装
+
+- 基準線表示システム（BaselineDisplay）
+- 水位判定システム（WaterLevelChecker、複数Water対応）
+- フォールド処理システム（FoldUseCase）
+- 含み益ポイント表示機能
+- GameStateEntityにフォールド回数と膨張回数を追加
+- VContainer統合とPrefab対応設計
+```

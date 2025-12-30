@@ -2,14 +2,12 @@
     "name": "App.Features",
     "rootNamespace": "App.Features",
     "references": [
-        "BBSim.Models",
-        "BBSim.SOs",
         "App.SOs",
         "Alchemy",
         "LitMotion",
         "Unity.TextMeshPro",
         "LitMotion.Extensions",
-        "Scripts.SaveJson"
+        "App.Settings"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

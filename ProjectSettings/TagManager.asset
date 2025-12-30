@@ -41,8 +41,17 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BackGround
+    uniqueID: 3069841239
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Coin
+    uniqueID: 396251809
+    locked: 0
+  - name: UI
+    uniqueID: 1566689005
     locked: 0
   m_RenderingLayers:
   - Default

@@ -1,9 +1,9 @@
 ﻿<Solution>
   <Project Path="Kybernetik.Animancer.csproj" />
+  <Project Path="App.Features.csproj" />
   <Project Path="Common.Settings.csproj" />
   <Project Path="Kybernetik.Animancer.Editor.csproj" />
   <Project Path="Common.UIs.csproj" />
-  <Project Path="App.Features.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Common.Features.csproj" />
   <Project Path="Common.Vcontainer.csproj" />

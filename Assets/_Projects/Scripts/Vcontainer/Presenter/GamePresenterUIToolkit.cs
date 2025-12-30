@@ -1,5 +1,6 @@
 using System;
 using App.Features;
+using App.Features.WaterTank.Water;
 using App.SOs;
 using App.UIs.Core;
 using App.UIs.Views;
@@ -21,6 +22,8 @@ namespace App.Vcontainer.Presenter
         private readonly UIToolkitCanvas _uiToolkitCanvas;
         private readonly GameStateEntity _gameState;
         private readonly CoinDropUseCase _coinDropUseCase;
+        private readonly FoldUseCase _foldUseCase;
+        private readonly WaterLevelChecker _waterLevelChecker;
         private readonly UIToolkitButtonHandler _buttonHandler;
         private readonly GlobalAssetAssembly _assetAssembly;
         private readonly CompositeDisposable _disposables = new();
@@ -43,11 +46,15 @@ namespace App.Vcontainer.Presenter
             UIToolkitCanvas uiToolkitCanvas,
             GameStateEntity gameState,
             CoinDropUseCase coinDropUseCase,
+            FoldUseCase foldUseCase,
+            WaterLevelChecker waterLevelChecker,
             UIToolkitButtonHandler buttonHandler,
             GlobalAssetAssembly assetAssembly)
         {
             _uiToolkitCanvas = uiToolkitCanvas;
             _gameState = gameState;
+            _foldUseCase = foldUseCase;
+            _waterLevelChecker = waterLevelChecker;
             _coinDropUseCase = coinDropUseCase;
             _buttonHandler = buttonHandler;
             _assetAssembly = assetAssembly;
@@ -71,6 +78,10 @@ namespace App.Vcontainer.Presenter
             // --- GameStateEntityのデータ変更を購読し、UIを更新する ---
             _gameState.Points
                 .Subscribe(points => _gameView.SetPoints(points))
+                .AddTo(_disposables);
+
+            _gameState.PendingPoints
+                .Subscribe(pendingPoints => _gameView.SetPendingPoints(pendingPoints))
                 .AddTo(_disposables);
 
             _gameState.IsGameOver
@@ -104,6 +115,26 @@ namespace App.Vcontainer.Presenter
             {
                 await FoldAsync();
             });
+
+            // フォールドボタンを初期状態で無効化
+            _gameView.SetFoldButtonEnabled(false);
+
+            // WaterLevelCheckerのイベントを購読
+            _waterLevelChecker.OnBaselineReachedAsObservable()
+                .Subscribe(isAboveBaseline =>
+                {
+                    _gameView.SetFoldButtonEnabled(isAboveBaseline);
+                    Debug.Log($"GamePresenterUIToolkit: Fold button enabled = {isAboveBaseline}");
+                })
+                .AddTo(_disposables);
+
+            // WaterExpansionのイベントを購読（膨張回数をカウント）
+            WaterExpansion.OnWaterExpanded += () =>
+            {
+                _gameState.IncrementExpansionCount();
+                _gameState.UpdatePendingPoints(_gameState.FoldCount.CurrentValue);
+                Debug.Log($"GamePresenterUIToolkit: Water expanded! Total expansions: {_gameState.ExpansionCount}, Pending points: {_gameState.PendingPoints.CurrentValue}");
+            };
 
             // 初期ポイントを設定（デバッグ用）
             _gameState.AddPoints(100);
@@ -207,11 +238,8 @@ namespace App.Vcontainer.Presenter
         {
             Debug.Log("Fold button clicked");
 
-            // TODO: フォールド処理の実装
-            // - 現在の水位に応じてポイントを獲得
-            // - ゲームをリセット
-
-            await UniTask.Yield();
+            // フォールド処理を実行
+            await _foldUseCase.ExecuteFold();
         }
 
         private void LoadCoinDefinitions()

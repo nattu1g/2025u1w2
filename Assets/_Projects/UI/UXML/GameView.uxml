@@ -6,6 +6,7 @@
         <!-- 上部UI: ポイント表示 -->
         <ui:VisualElement class="top-panel">
             <ui:Label name="points-label" text="Points: 0" class="points-label"/>
+            <ui:Label name="pending-points-label" text="Pending: +0" class="pending-points-label"/>
         </ui:VisualElement>
         
         <!-- 中央: 3Dゲーム表示エリア（UIは透明） -->

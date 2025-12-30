@@ -1,6 +1,8 @@
 using Alchemy.Inspector;
 using App.Features;
+using App.Features.WaterTank.Baseline;
 using App.Features.WaterTank.Coin;
+using App.Features.WaterTank.Water;
 using App.UIs.Core;
 using App.Vcontainer.Entity;
 using App.Vcontainer.EntryPoint;
@@ -64,6 +66,7 @@ namespace Scripts.Vcontainer.Installer
 
             // UseCase - ゲームロジック
             builder.Register<CoinDropUseCase>(Lifetime.Singleton);
+            builder.Register<FoldUseCase>(Lifetime.Singleton);
 
             // Presenter
             builder.Register<OptionPresenter>(Lifetime.Singleton)
@@ -75,12 +78,15 @@ namespace Scripts.Vcontainer.Installer
             builder.RegisterComponentInHierarchy<SaveManager>();
             builder.RegisterComponentInHierarchy<CoinSpawner>();
             builder.RegisterComponentInHierarchy<GlobalAssetAssembly>();
+            builder.RegisterComponentInHierarchy<BaselineDisplay>();
+            builder.RegisterComponentInHierarchy<WaterLevelChecker>();
 
             // UI Toolkit版のCanvasを登録
             builder.RegisterComponentInHierarchy<UIToolkitCanvas>();
 
             // 初期化の起点となる唯一のEntryPoint
             builder.RegisterEntryPoint<MainSceneInitializer>();
+            builder.RegisterEntryPoint<WaterLevelCheckerInitializer>();
         }
     }
 }

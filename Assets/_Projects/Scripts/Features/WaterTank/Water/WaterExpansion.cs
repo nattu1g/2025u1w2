@@ -22,6 +22,9 @@ namespace App.Features.WaterTank.Water
         // 既に接触したコインを記録（初回のみ処理するため）
         private HashSet<GameObject> _touchedCoins = new HashSet<GameObject>();
 
+        // 静的イベント：水が膨張した時に発行
+        public static event System.Action OnWaterExpanded;
+
         private void Awake()
         {
             // 親オブジェクト（Water）の初期スケールを記録
@@ -44,7 +47,7 @@ namespace App.Features.WaterTank.Water
                 Debug.LogWarning("WaterExpansion: Colliderをトリガーに設定してください");
             }
         }
-        
+
         /// <summary>
         /// 水の物理設定（摩擦をなくす）
         /// </summary>
@@ -52,7 +55,7 @@ namespace App.Features.WaterTank.Water
         {
             // 親オブジェクトのCollider2Dを取得
             Collider2D waterCollider = waterTransform.GetComponent<Collider2D>();
-            
+
             if (waterCollider != null && !waterCollider.isTrigger)
             {
                 // 摩擦0のPhysicsMaterial2Dを作成
@@ -61,7 +64,7 @@ namespace App.Features.WaterTank.Water
                     friction = 0f,      // 摩擦なし
                     bounciness = 0f     // 反発なし
                 };
-                
+
                 waterCollider.sharedMaterial = waterMaterial;
                 Debug.Log($"WaterExpansion: PhysicsMaterial2D (friction=0) applied to {waterTransform.name}");
             }
@@ -131,7 +134,10 @@ namespace App.Features.WaterTank.Water
 
             waterTransform.localScale = newScale;
 
-            Debug.Log($"水が膨張しました: {waterTransform.name} Scale: {waterTransform.localScale}");
+            Debug.Log($"WaterExpansion: Water expanded! New scale: {newScale}, Rate: {rate}");
+
+            // 膨張イベントを発行
+            OnWaterExpanded?.Invoke();
         }
 
         /// <summary>
