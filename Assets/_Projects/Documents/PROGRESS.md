@@ -379,3 +379,38 @@ UIボタンクリック時にマウス位置を追従してしまう問題を修
 - SOを編集するだけで膨張率を調整できる
 - プレハブを直接編集する必要がない
 - バランス調整が容易
+
+### 親オブジェクト（Water）も膨張するように修正
+
+WaterTrigger（子オブジェクト）だけでなく、親のWaterオブジェクト（見た目のCube）も一緒に膨張するように修正しました。
+
+**問題:**
+- WaterTriggerのスケールだけが変わり、親のWater（Cube）は変わらなかった
+- 見た目が膨張しない
+- Colliderのサイズも変わらない
+
+**修正内容:**
+
+1. **ExpandWater()メソッドの修正**
+   - `transform.parent`（親のWater）のスケールを変更
+   - 親がない場合は自身のスケールを変更（フォールバック）
+
+2. **Awake()メソッドの修正**
+   - 親オブジェクトの初期スケールを記録
+   - Collider2Dのnullチェックを追加
+
+3. **ResetWater()メソッドの修正**
+   - 親オブジェクトのスケールをリセット
+
+**コード例:**
+```csharp
+// 親オブジェクト（Water）のスケールを変更
+Transform waterTransform = transform.parent != null ? transform.parent : transform;
+Vector3 newScale = waterTransform.localScale + expansion;
+waterTransform.localScale = newScale;
+```
+
+**効果:**
+- 見た目のCubeが膨張する
+- Colliderも一緒に大きくなる
+- 2回目以降のコイン接触も正しく検知される

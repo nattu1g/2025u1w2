@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843b7a1aea29043eaa4764094619df1e, type: 3}
   m_Name: Cool
   m_EditorClassIdentifier: App.SOs::App.SOs.CoinDefinition
-  _coinName: Cool
+  _coinName: CPPL
   _description: 
   _price: 0
-  _expansionRate: 1
+  _expansionRate: 10
   _coinPrefab: {fileID: 3899713252433954096, guid: e3f00d6b17d654c89825168c263d98be, type: 3}
   _icon: {fileID: 21300000, guid: 6d37c786b3231bf4b8d7776816653b88, type: 3}

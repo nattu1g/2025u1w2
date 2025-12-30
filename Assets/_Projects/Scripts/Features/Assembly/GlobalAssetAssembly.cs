@@ -1,4 +1,5 @@
 using Alchemy.Inspector;
+using App.SOs;
 using UnityEngine;
 
 namespace App.Features
@@ -12,6 +13,20 @@ namespace App.Features
         [Header("Water Tank Game")]
         [LabelText("コインPrefab")]
         [SerializeField] private GameObject _coinPrefab;
+
+        [Header("Coin Definitions")]
+        [LabelText("通常コイン")]
+        [SerializeField] private CoinDefinition _normalCoinDef;
+
+        [LabelText("高密度コイン")]
+        [SerializeField] private CoinDefinition _denseCoinDef;
+
+        [LabelText("冷却コイン")]
+        [SerializeField] private CoinDefinition _coolingCoinDef;
+
         public GameObject CoinPrefab => _coinPrefab;
+        public CoinDefinition NormalCoinDef => _normalCoinDef;
+        public CoinDefinition DenseCoinDef => _denseCoinDef;
+        public CoinDefinition CoolingCoinDef => _coolingCoinDef;
     }
 }

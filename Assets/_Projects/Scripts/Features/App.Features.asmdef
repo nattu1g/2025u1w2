@@ -4,6 +4,7 @@
     "references": [
         "BBSim.Models",
         "BBSim.SOs",
+        "App.SOs",
         "Alchemy",
         "LitMotion",
         "Unity.TextMeshPro",

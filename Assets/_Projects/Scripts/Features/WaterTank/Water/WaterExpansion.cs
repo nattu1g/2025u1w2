@@ -24,11 +24,19 @@ namespace App.Features.WaterTank.Water
 
         private void Awake()
         {
-            _initialScale = transform.localScale;
+            // 親オブジェクト（Water）の初期スケールを記録
+            Transform waterTransform = transform.parent != null ? transform.parent : transform;
+            _initialScale = waterTransform.localScale;
+
+            Debug.Log($"WaterExpansion: Initial scale recorded for {waterTransform.name}: {_initialScale}");
 
             // Colliderがトリガーであることを確認
             var collider = GetComponent<Collider2D>();
-            if (!collider.isTrigger)
+            if (collider == null)
+            {
+                Debug.LogError("WaterExpansion: Collider2D component not found!");
+            }
+            else if (!collider.isTrigger)
             {
                 Debug.LogWarning("WaterExpansion: Colliderをトリガーに設定してください");
             }
@@ -79,7 +87,10 @@ namespace App.Features.WaterTank.Water
         private void ExpandWater(float rate)
         {
             Vector3 expansion = new Vector3(rate, rate, rate);
-            Vector3 newScale = transform.localScale + expansion;
+
+            // 親オブジェクト（Water）のスケールを変更
+            Transform waterTransform = transform.parent != null ? transform.parent : transform;
+            Vector3 newScale = waterTransform.localScale + expansion;
 
             // スケールの制限
             float maxScaleValue = _initialScale.x * _maxScale;
@@ -89,9 +100,9 @@ namespace App.Features.WaterTank.Water
             newScale.y = Mathf.Clamp(newScale.y, minScaleValue, maxScaleValue);
             newScale.z = Mathf.Clamp(newScale.z, minScaleValue, maxScaleValue);
 
-            transform.localScale = newScale;
+            waterTransform.localScale = newScale;
 
-            Debug.Log($"水が膨張しました: {transform.localScale}");
+            Debug.Log($"水が膨張しました: {waterTransform.name} Scale: {waterTransform.localScale}");
         }
 
         /// <summary>
@@ -99,7 +110,9 @@ namespace App.Features.WaterTank.Water
         /// </summary>
         public void ResetWater()
         {
-            transform.localScale = _initialScale;
+            // 親オブジェクト（Water）のスケールをリセット
+            Transform waterTransform = transform.parent != null ? transform.parent : transform;
+            waterTransform.localScale = _initialScale;
             _touchedCoins.Clear(); // 接触記録もクリア
             Debug.Log("水をリセットしました");
         }

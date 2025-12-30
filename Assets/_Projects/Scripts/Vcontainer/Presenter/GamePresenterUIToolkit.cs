@@ -216,29 +216,44 @@ namespace App.Vcontainer.Presenter
 
         private void LoadCoinDefinitions()
         {
-            // TODO: CoinDefinitionをScriptableObjectから読み込む
-            // 現時点ではデバッグ用にダミーのCoinDefinitionを作成
-            Debug.LogWarning("Using dummy CoinDefinitions for debugging. Please create ScriptableObjects later.");
+            // GlobalAssetAssemblyからCoinDefinitionを読み込む
+            _normalCoinDef = _assetAssembly.NormalCoinDef;
+            _denseCoinDef = _assetAssembly.DenseCoinDef;
+            _coolingCoinDef = _assetAssembly.CoolingCoinDef;
 
-            // GlobalAssetAssemblyからコインプレハブを取得
-            GameObject coinPrefab = _assetAssembly.CoinPrefab;
-
-            if (coinPrefab == null)
+            // nullチェック
+            if (_normalCoinDef == null || _denseCoinDef == null || _coolingCoinDef == null)
             {
-                Debug.LogError("Coin prefab is null in GlobalAssetAssembly. Please assign the Coin prefab in the Inspector.");
+                Debug.LogError("CoinDefinitions are not assigned in GlobalAssetAssembly. Please assign them in the Inspector.");
+                Debug.LogError($"NormalCoinDef: {(_normalCoinDef != null ? "OK" : "NULL")}");
+                Debug.LogError($"DenseCoinDef: {(_denseCoinDef != null ? "OK" : "NULL")}");
+                Debug.LogError($"CoolingCoinDef: {(_coolingCoinDef != null ? "OK" : "NULL")}");
+
+                // フォールバック: ダミーのCoinDefinitionを作成
+                Debug.LogWarning("Creating dummy CoinDefinitions as fallback...");
+                GameObject coinPrefab = _assetAssembly.CoinPrefab;
+
+                if (_normalCoinDef == null)
+                {
+                    _normalCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
+                    _normalCoinDef.InitializeForDebug("通常コイン", 10, 0.1f, coinPrefab);
+                }
+                if (_denseCoinDef == null)
+                {
+                    _denseCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
+                    _denseCoinDef.InitializeForDebug("高密度コイン", 50, 0.02f, coinPrefab);
+                }
+                if (_coolingCoinDef == null)
+                {
+                    _coolingCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
+                    _coolingCoinDef.InitializeForDebug("冷却コイン", 100, -0.05f, coinPrefab);
+                }
             }
-
-            // ダミーのCoinDefinitionを作成（デバッグ用）
-            _normalCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
-            _normalCoinDef.InitializeForDebug("通常コイン", 10, 0.1f, coinPrefab);
-
-            _denseCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
-            _denseCoinDef.InitializeForDebug("高密度コイン", 50, 0.02f, coinPrefab);
-
-            _coolingCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
-            _coolingCoinDef.InitializeForDebug("冷却コイン", 100, -0.05f, coinPrefab);
-
-            Debug.Log($"Dummy CoinDefinitions created with coin prefab: {(coinPrefab != null ? "OK" : "NULL")}");
+            else
+            {
+                Debug.Log("CoinDefinitions loaded successfully from GlobalAssetAssembly.");
+                Debug.Log($"Normal: {_normalCoinDef.CoinName}, Dense: {_denseCoinDef.CoinName}, Cooling: {_coolingCoinDef.CoinName}");
+            }
         }
 
         public void Dispose()
