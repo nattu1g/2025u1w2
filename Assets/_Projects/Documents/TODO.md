@@ -13,11 +13,14 @@
   - [x] コイン投下ロジックの実装
   - [x] 物理演算の調整（Rigidbody設定）
   
-- [ ] 水の膨張システム
-  - [ ] 水オブジェクトの作成（青いCube/Mesh）
-  - [ ] `CoinType`スクリプトの実装
-  - [ ] 水の膨張ロジックの実装（OnTriggerEnter）
-  - [ ] コインの種類による膨張率の設定
+- [x] 水の膨張システム
+  - [x] 水オブジェクトの作成（青いCube/Mesh）
+  - [x] `CoinType`スクリプトの実装
+  - [x] `CoinDefinition`スクリプトの実装（ScriptableObject）
+  - [x] 水の膨張ロジックの実装（OnTriggerEnter2D）
+  - [x] コインの種類による膨張率の設定
+  - [x] 初回接触のみ判定する仕組み（HashSet）
+  - [x] 最大/最小スケールの制限機能
 
 ### [Day 3-4] ゲームシステム実装
 

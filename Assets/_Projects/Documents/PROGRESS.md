@@ -116,3 +116,35 @@ Resourcesフォルダの代わりに`GlobalAssetAssembly`を使用してコイ�
 - `BoxCollider2D` #1（Is Trigger: true）- コイン検知用
 - `BoxCollider2D` #2（Is Trigger: false）- 水槽衝突用
 - Layer: `Water`
+
+## 2025-12-30
+
+### コイン物理挙動の改善
+
+コインが積み上がらず、自然に滑り落ちる物理挙動を実装しました。
+
+**実装内容:**
+
+1. **CoinType.csの拡張**
+   - PhysicsMaterial2Dの自動生成・適用機能を追加
+   - 摩擦係数（Friction: 0.1）と反発係数（Bounciness: 0.2）の設定
+   - Rigidbody2Dパラメータの自動設定（Mass, Linear Drag, Angular Drag）
+   - 連続衝突検出モード（Continuous）の有効化
+
+2. **Inspector調整機能**
+   - 摩擦係数、反発係数をInspectorで調整可能に
+   - コインの種類別に物理パラメータをカスタマイズ可能
+
+3. **ドキュメント作成**
+   - `CoinPhysicsSetupGuide.md` - Unity Editor設定ガイド
+   - コインの種類別の推奨設定を記載
+   - トラブルシューティング情報を追加
+
+**技術的詳細:**
+- CircleCollider2Dの使用を推奨（BoxCollider2Dより滑りやすい）
+- 低摩擦マテリアルにより、コイン同士が滑って重ならない
+- 適度な反発係数で、壁に当たって跳ね返る挙動を実現
+
+**次のステップ:**
+- Unity Editor上でコインプレハブに設定を適用
+- 実際の挙動をテストして微調整
