@@ -45,6 +45,15 @@ namespace App.Features.WaterTank.Coin
 
         public CoinCategory Category => _category;
         public float ExpansionRate => _expansionRate;
+        
+        /// <summary>
+        /// 膨張率を外部から設定（CoinDefinitionの値を使用する場合）
+        /// </summary>
+        public void SetExpansionRate(float expansionRate)
+        {
+            _expansionRate = expansionRate;
+            Debug.Log($"CoinType: ExpansionRate set to {_expansionRate}");
+        }
 
         private void Awake()
         {

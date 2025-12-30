@@ -36,18 +36,24 @@ namespace App.Features.WaterTank.Water
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log($"WaterExpansion: OnTriggerEnter2D called with {other.gameObject.name}, Tag: {other.tag}");
+
             // コインとの接触を検知
             if (other.CompareTag("Coin"))
             {
+                Debug.Log($"WaterExpansion: Coin detected! {other.gameObject.name}");
+
                 // 既に接触済みのコインは無視
                 if (_touchedCoins.Contains(other.gameObject))
                 {
+                    Debug.Log($"WaterExpansion: Coin already touched, ignoring. {other.gameObject.name}");
                     return;
                 }
 
                 var coinType = other.GetComponent<CoinType>();
                 if (coinType != null)
                 {
+                    Debug.Log($"WaterExpansion: CoinType found! ExpansionRate: {coinType.ExpansionRate}");
                     ExpandWater(coinType.ExpansionRate);
 
                     // 接触済みとして記録
@@ -55,6 +61,14 @@ namespace App.Features.WaterTank.Water
 
                     Debug.Log($"コイン初回接触: {other.gameObject.name}");
                 }
+                else
+                {
+                    Debug.LogWarning($"WaterExpansion: CoinType component not found on {other.gameObject.name}");
+                }
+            }
+            else
+            {
+                Debug.Log($"WaterExpansion: Not a Coin. Tag is '{other.tag}' (expected 'Coin')");
             }
         }
 

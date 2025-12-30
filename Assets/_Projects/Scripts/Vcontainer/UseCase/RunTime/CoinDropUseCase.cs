@@ -87,10 +87,13 @@ namespace App.Vcontainer.UseCase.RunTime
             CoinType coinType = coin.GetComponent<CoinType>();
             if (coinType != null)
             {
-                // CoinDefinitionから膨張率を設定
-                // 注意: CoinTypeは既にInspectorで設定されている可能性があるため、
-                // 必要に応じてCoinDefinitionの値で上書きする
+                // CoinDefinitionから膨張率を設定（ScriptableObjectの値を使用）
+                coinType.SetExpansionRate(coinDefinition.ExpansionRate);
                 Debug.Log($"CoinDropUseCase: Dropped {coinDefinition.CoinName} (ExpansionRate: {coinDefinition.ExpansionRate})");
+            }
+            else
+            {
+                Debug.LogWarning($"CoinDropUseCase: CoinType component not found on {coin.name}");
             }
 
             return true;
@@ -107,7 +110,19 @@ namespace App.Vcontainer.UseCase.RunTime
                 return null;
             }
 
-            return _coinSpawner.SpawnCoin(coinDefinition.CoinPrefab);
+            GameObject coin = _coinSpawner.SpawnCoin(coinDefinition.CoinPrefab);
+
+            if (coin != null)
+            {
+                // CoinDefinitionから膨張率を設定
+                CoinType coinType = coin.GetComponent<CoinType>();
+                if (coinType != null)
+                {
+                    coinType.SetExpansionRate(coinDefinition.ExpansionRate);
+                }
+            }
+
+            return coin;
         }
     }
 }

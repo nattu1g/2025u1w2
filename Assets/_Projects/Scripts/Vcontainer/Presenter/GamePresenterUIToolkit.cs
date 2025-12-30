@@ -27,6 +27,12 @@ namespace App.Vcontainer.Presenter
 
         private GameViewUIToolkit _gameView;
 
+        // Camera.main警告を一度だけ表示するためのフラグ
+        private bool _cameraWarningShown = false;
+
+        // 前フレームのマウス位置（ドラッグ判定用）
+        private Vector3 _lastMousePosition;
+
         // コイン定義（後でScriptableObjectから読み込む）
         // TODO: CoinDefinitionをResourcesやAddressablesから読み込む
         private CoinDefinition _normalCoinDef;
@@ -128,24 +134,37 @@ namespace App.Vcontainer.Presenter
                 Debug.Log("Right key pressed");
             }
 
-            // マウス/タッチ入力（画面をクリック/タッチした位置に移動）
-            // 注意: 2Dゲームの場合、カメラが正しく設定されている必要があります
+            // マウス/タッチ入力（ドラッグ操作のみ）
+            // GetMouseButton(0)だとUIボタンクリックも含まれるため、
+            // マウスが移動している場合のみ位置を更新する
             if (Input.GetMouseButton(0))
             {
-                // カメラのnullチェック
-                if (Camera.main == null)
+                // マウスが移動しているかチェック（ドラッグ判定）
+                Vector3 mouseDelta = Input.mousePosition - _lastMousePosition;
+                bool isMouseMoving = mouseDelta.magnitude > 1f; // 1ピクセル以上移動
+
+                if (isMouseMoving)
                 {
-                    Debug.LogWarning("Camera.main is null. Mouse input is disabled. Please add a Camera with MainCamera tag to the scene.");
-                }
-                else
-                {
-                    Vector3 mousePos = Input.mousePosition;
-                    // スクリーン座標をワールド座標に変換
-                    // 2Dの場合、Z座標を0に設定
-                    mousePos.z = -Camera.main.transform.position.z;
-                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
-                    _coinDropUseCase.SetDropPosition(worldPos.x);
-                    Debug.Log($"Mouse position: {worldPos.x}");
+                    // カメラのnullチェック
+                    if (Camera.main == null)
+                    {
+                        // 警告は初回のみ表示
+                        if (!_cameraWarningShown)
+                        {
+                            Debug.LogWarning("Camera.main is null. Mouse input is disabled. Please add a Camera with MainCamera tag to the scene.");
+                            _cameraWarningShown = true;
+                        }
+                    }
+                    else
+                    {
+                        Vector3 mousePos = Input.mousePosition;
+                        // スクリーン座標をワールド座標に変換
+                        // 2Dの場合、Z座標を0に設定
+                        mousePos.z = -Camera.main.transform.position.z;
+                        Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+                        _coinDropUseCase.SetDropPosition(worldPos.x);
+                        Debug.Log($"Mouse drag position: {worldPos.x}");
+                    }
                 }
             }
             else if (Mathf.Abs(direction) > 0.01f)
@@ -156,6 +175,9 @@ namespace App.Vcontainer.Presenter
                 float newPos = _coinDropUseCase.GetCurrentDropPosition();
                 Debug.Log($"Drop position updated: {currentPos} -> {newPos}");
             }
+
+            // 前フレームのマウス位置を記録
+            _lastMousePosition = Input.mousePosition;
         }
 
         private async UniTask DropCoinAsync(CoinDefinition coinDef)
