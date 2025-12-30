@@ -190,3 +190,91 @@ Collider Scale: 0.90
 Random Initial Rotation: ON
 Mass: 0.5
 ```
+
+### コイン投下位置の操作機能実装
+
+ゲームセンターのコイン落としゲームのように、プレイヤーがコインの投下位置（X座標）を左右に操作できる機能を実装しました。
+
+**実装内容:**
+
+1. **CoinSpawner.csの拡張**
+   - X軸方向の移動機能を追加（`SetPositionX()`, `MoveX()`, `UpdatePositionX()`）
+   - 移動範囲の制限機能（`_moveRangeX`パラメータ）
+   - 移動速度の設定（`_moveSpeed`パラメータ）
+   - 現在位置の取得プロパティ（`CurrentX`, `MinX`, `MaxX`）
+   - Gizmosによる移動範囲の可視化（Scene Viewで黄色の線で表示）
+
+2. **CoinDropUseCase.csの拡張**
+   - `UpdateDropPosition()` - 移動方向を指定して位置を更新
+   - `SetDropPosition()` - 絶対座標で位置を設定
+   - `GetCurrentDropPosition()` - 現在位置を取得
+
+3. **GamePresenterUIToolkit.csの拡張**
+   - `ITickable`インターフェースを実装
+   - `Tick()`メソッドで毎フレーム入力を処理
+   - キーボード入力対応（左右矢印キー、A/Dキー）
+   - マウス/タッチ入力対応（クリック/タッチ位置に直接移動）
+
+**操作方法:**
+- **キーボード**: 左右矢印キー または A/Dキー で左右に移動
+- **マウス/タッチ**: 画面をクリック/タッチした位置に投下位置を移動
+
+**Unity Editor設定:**
+- `CoinSpawner`の`Move Range X`: 移動範囲（デフォルト: 5.0）
+- `CoinSpawner`の`Move Speed`: 移動速度（デフォルト: 5.0）
+
+**次のステップ:**
+- Unity Editorでテストして動作確認
+- 必要に応じて移動速度や範囲を調整
+
+### 投下位置操作の不具合修正
+
+投下位置が変わらない問題を修正しました。
+
+**問題の原因:**
+- `GamePresenterUIToolkit`が`ITickable`として登録されていなかった
+- そのため`Tick()`メソッドが毎フレーム呼ばれず、入力処理が実行されていなかった
+
+**修正内容:**
+
+1. **MainLifeTimeScope.csの修正**
+   - `GamePresenterUIToolkit`の登録を`.As<IStartable>()`から`.AsImplementedInterfaces()`に変更
+   - これにより`IStartable`と`ITickable`の両方が自動的に登録される
+
+2. **デバッグログの追加**
+   - `HandleDropPositionInput()`にデバッグログを追加
+   - キー入力時と位置更新時にログを出力
+   - 動作確認が容易になる
+
+**確認方法:**
+1. Unity Editorでゲームを実行
+2. 左右矢印キーまたはA/Dキーを押す
+3. Consoleに「Left key pressed」または「Right key pressed」が表示される
+4. 「Drop position updated: X -> Y」が表示され、位置が変わることを確認
+
+### Camera.main nullエラーの修正
+
+マウスクリック時に`NullReferenceException`が発生する問題を修正しました。
+
+**問題の原因:**
+- `Camera.main`がnullの場合、`ScreenToWorldPoint()`でエラーが発生
+- シーンにMainCameraタグが付いたカメラがない、または設定されていない
+
+**修正内容:**
+
+1. **Camera.mainのnullチェック追加**
+   - マウス入力処理の前にカメラの存在を確認
+   - カメラがない場合は警告ログを出力し、マウス入力を無効化
+
+2. **2Dゲーム対応の改善**
+   - `mousePos.z = -Camera.main.transform.position.z;`を追加
+   - 2Dゲームで正しくワールド座標に変換されるように修正
+
+**Unity Editor設定:**
+- シーンにカメラを配置
+- カメラのTagを「MainCamera」に設定
+- 2Dゲームの場合、カメラのProjectionを「Orthographic」に設定
+
+**注意:**
+- マウス入力を使用する場合は、必ずMainCameraタグが付いたカメラをシーンに配置してください
+- キーボード入力はカメラなしでも動作します

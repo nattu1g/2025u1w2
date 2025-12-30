@@ -69,7 +69,7 @@ namespace Scripts.Vcontainer.Installer
             builder.Register<OptionPresenter>(Lifetime.Singleton)
                 .As<IStartable>();
             builder.Register<GamePresenterUIToolkit>(Lifetime.Singleton)
-                .As<IStartable>();
+                .AsImplementedInterfaces(); // IStartable と ITickable の両方を登録
 
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();

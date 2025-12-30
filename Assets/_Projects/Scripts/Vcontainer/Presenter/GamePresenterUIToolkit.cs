@@ -16,7 +16,7 @@ namespace App.Vcontainer.Presenter
     /// <summary>
     /// ゲーム画面のPresenter（UI Toolkit版）
     /// </summary>
-    public class GamePresenterUIToolkit : IDisposable, IStartable
+    public class GamePresenterUIToolkit : IDisposable, IStartable, ITickable
     {
         private readonly UIToolkitCanvas _uiToolkitCanvas;
         private readonly GameStateEntity _gameState;
@@ -101,6 +101,61 @@ namespace App.Vcontainer.Presenter
 
             // 初期ポイントを設定（デバッグ用）
             _gameState.AddPoints(100);
+        }
+
+        public void Tick()
+        {
+            // 投下位置の操作（キーボード入力）
+            HandleDropPositionInput();
+        }
+
+        /// <summary>
+        /// 投下位置の入力処理
+        /// </summary>
+        private void HandleDropPositionInput()
+        {
+            float direction = 0f;
+
+            // 左右矢印キー
+            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            {
+                direction = -1f;
+                Debug.Log("Left key pressed");
+            }
+            else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            {
+                direction = 1f;
+                Debug.Log("Right key pressed");
+            }
+
+            // マウス/タッチ入力（画面をクリック/タッチした位置に移動）
+            // 注意: 2Dゲームの場合、カメラが正しく設定されている必要があります
+            if (Input.GetMouseButton(0))
+            {
+                // カメラのnullチェック
+                if (Camera.main == null)
+                {
+                    Debug.LogWarning("Camera.main is null. Mouse input is disabled. Please add a Camera with MainCamera tag to the scene.");
+                }
+                else
+                {
+                    Vector3 mousePos = Input.mousePosition;
+                    // スクリーン座標をワールド座標に変換
+                    // 2Dの場合、Z座標を0に設定
+                    mousePos.z = -Camera.main.transform.position.z;
+                    Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+                    _coinDropUseCase.SetDropPosition(worldPos.x);
+                    Debug.Log($"Mouse position: {worldPos.x}");
+                }
+            }
+            else if (Mathf.Abs(direction) > 0.01f)
+            {
+                // キーボード入力の場合
+                float currentPos = _coinDropUseCase.GetCurrentDropPosition();
+                _coinDropUseCase.UpdateDropPosition(direction);
+                float newPos = _coinDropUseCase.GetCurrentDropPosition();
+                Debug.Log($"Drop position updated: {currentPos} -> {newPos}");
+            }
         }
 
         private async UniTask DropCoinAsync(CoinDefinition coinDef)
