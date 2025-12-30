@@ -31,7 +31,7 @@ namespace App.Features.WaterTank.Water
             Transform waterTransform = transform.parent != null ? transform.parent : transform;
             _initialScale = waterTransform.localScale;
 
-            Debug.Log($"WaterExpansion: Initial scale recorded for {waterTransform.name}: {_initialScale}");
+
 
             // 親オブジェクトのCollider2Dに摩擦0のPhysicsMaterial2Dを設定
             SetupWaterPhysics(waterTransform);
@@ -66,7 +66,7 @@ namespace App.Features.WaterTank.Water
                 };
 
                 waterCollider.sharedMaterial = waterMaterial;
-                Debug.Log($"WaterExpansion: PhysicsMaterial2D (friction=0) applied to {waterTransform.name}");
+
             }
             else
             {
@@ -76,30 +76,30 @@ namespace App.Features.WaterTank.Water
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            Debug.Log($"WaterExpansion: OnTriggerEnter2D called with {other.gameObject.name}, Tag: {other.tag}");
+
 
             // コインとの接触を検知
             if (other.CompareTag("Coin"))
             {
-                Debug.Log($"WaterExpansion: Coin detected! {other.gameObject.name}");
+
 
                 // 既に接触済みのコインは無視
                 if (_touchedCoins.Contains(other.gameObject))
                 {
-                    Debug.Log($"WaterExpansion: Coin already touched, ignoring. {other.gameObject.name}");
+
                     return;
                 }
 
                 var coinType = other.GetComponent<CoinType>();
                 if (coinType != null)
                 {
-                    Debug.Log($"WaterExpansion: CoinType found! ExpansionRate: {coinType.ExpansionRate}");
+
                     ExpandWater(coinType.ExpansionRate);
 
                     // 接触済みとして記録
                     _touchedCoins.Add(other.gameObject);
 
-                    Debug.Log($"コイン初回接触: {other.gameObject.name}");
+
                 }
                 else
                 {
@@ -108,7 +108,7 @@ namespace App.Features.WaterTank.Water
             }
             else
             {
-                Debug.Log($"WaterExpansion: Not a Coin. Tag is '{other.tag}' (expected 'Coin')");
+
             }
         }
 
@@ -134,7 +134,7 @@ namespace App.Features.WaterTank.Water
 
             waterTransform.localScale = newScale;
 
-            Debug.Log($"WaterExpansion: Water expanded! New scale: {newScale}, Rate: {rate}");
+
 
             // 膨張イベントを発行
             OnWaterExpanded?.Invoke();
@@ -149,7 +149,7 @@ namespace App.Features.WaterTank.Water
             Transform waterTransform = transform.parent != null ? transform.parent : transform;
             waterTransform.localScale = _initialScale;
             _touchedCoins.Clear(); // 接触記録もクリア
-            Debug.Log("水をリセットしました");
+
         }
     }
 }

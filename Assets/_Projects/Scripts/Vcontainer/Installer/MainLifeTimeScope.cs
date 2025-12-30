@@ -1,8 +1,11 @@
 using Alchemy.Inspector;
 using App.Features;
+using App.Features.Assembly;
+using App.Features.Save;
 using App.Features.WaterTank.Baseline;
 using App.Features.WaterTank.Coin;
 using App.Features.WaterTank.Water;
+using App.UIs;
 using App.UIs.Core;
 using App.Vcontainer.Entity;
 using App.Vcontainer.EntryPoint;
@@ -67,6 +70,7 @@ namespace Scripts.Vcontainer.Installer
             // UseCase - ゲームロジック
             builder.Register<CoinDropUseCase>(Lifetime.Singleton);
             builder.Register<FoldUseCase>(Lifetime.Singleton);
+            builder.Register<WaterSpawner>(Lifetime.Singleton);
 
             // Presenter
             builder.Register<OptionPresenter>(Lifetime.Singleton)

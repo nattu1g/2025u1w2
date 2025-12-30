@@ -1,11 +1,15 @@
 /* オプション画面全体 */
 .option-view {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 1000;
 }
 
 /* 背景 - 150%サイズで画面外までカバー */
@@ -16,16 +20,22 @@
     width: 150%;
     height: 150%;
     background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1001;
 }
 
 /* コンテンツコンテナ */
 .option-content-container {
+    position: absolute;
+    left: 25%;
+    top: 0%;
+    transform: translate(-50%, -50%);
     background-color: rgb(40, 40, 40);
     border-radius: 16px;
     padding: 32px;
     min-width: 400px;
     border-width: 2px;
     border-color: rgb(80, 80, 80);
+    z-index: 1002;
 }
 
 /* タイトル */

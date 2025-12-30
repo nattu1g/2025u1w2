@@ -10,7 +10,9 @@ using Common.Vcontainer.Handler;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
+using System.Collections.Generic;
 using VContainer.Unity;
+using App.Features.Assembly;
 
 namespace App.Vcontainer.Presenter
 {
@@ -26,6 +28,7 @@ namespace App.Vcontainer.Presenter
         private readonly WaterLevelChecker _waterLevelChecker;
         private readonly UIToolkitButtonHandler _buttonHandler;
         private readonly GlobalAssetAssembly _assetAssembly;
+        private readonly WaterSpawner _waterSpawner;
         private readonly CompositeDisposable _disposables = new();
 
         private GameViewUIToolkit _gameView;
@@ -49,7 +52,8 @@ namespace App.Vcontainer.Presenter
             FoldUseCase foldUseCase,
             WaterLevelChecker waterLevelChecker,
             UIToolkitButtonHandler buttonHandler,
-            GlobalAssetAssembly assetAssembly)
+            GlobalAssetAssembly assetAssembly,
+            WaterSpawner waterSpawner)
         {
             _uiToolkitCanvas = uiToolkitCanvas;
             _gameState = gameState;
@@ -58,6 +62,7 @@ namespace App.Vcontainer.Presenter
             _coinDropUseCase = coinDropUseCase;
             _buttonHandler = buttonHandler;
             _assetAssembly = assetAssembly;
+            _waterSpawner = waterSpawner;
         }
 
         public void Start()
@@ -138,6 +143,9 @@ namespace App.Vcontainer.Presenter
 
             // 初期ポイントを設定（デバッグ用）
             _gameState.AddPoints(100);
+
+            // Waterを初期生成
+            _waterSpawner.SpawnWaters();
         }
 
         public void Tick()
@@ -240,14 +248,17 @@ namespace App.Vcontainer.Presenter
 
             // フォールド処理を実行
             await _foldUseCase.ExecuteFold();
+
+            // フォールド後、ボタンを無効化（水位が基準線を超えるまで）
+            _gameView.SetFoldButtonEnabled(false);
         }
 
         private void LoadCoinDefinitions()
         {
             // GlobalAssetAssemblyからCoinDefinitionを読み込む
-            _normalCoinDef = _assetAssembly.NormalCoinDef;
-            _denseCoinDef = _assetAssembly.DenseCoinDef;
-            _coolingCoinDef = _assetAssembly.CoolingCoinDef;
+            _normalCoinDef = _assetAssembly.NormalCoinDefinition;
+            _denseCoinDef = _assetAssembly.DenseCoinDefinition;
+            _coolingCoinDef = _assetAssembly.CoolingCoinDefinition;
 
             // nullチェック
             if (_normalCoinDef == null || _denseCoinDef == null || _coolingCoinDef == null)

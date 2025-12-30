@@ -15,15 +15,18 @@ namespace App.Vcontainer.UseCase.RunTime
         private readonly GameStateEntity _gameState;
         private readonly WaterLevelChecker _waterLevelChecker;
         private readonly BaselineDisplay _baselineDisplay;
+        private readonly WaterSpawner _waterSpawner;
 
         public FoldUseCase(
             GameStateEntity gameState,
             WaterLevelChecker waterLevelChecker,
-            BaselineDisplay baselineDisplay)
+            BaselineDisplay baselineDisplay,
+            WaterSpawner waterSpawner)
         {
             _gameState = gameState;
             _waterLevelChecker = waterLevelChecker;
             _baselineDisplay = baselineDisplay;
+            _waterSpawner = waterSpawner;
         }
 
         /// <summary>
@@ -80,20 +83,8 @@ namespace App.Vcontainer.UseCase.RunTime
         /// </summary>
         private async UniTask ClearGameObjects()
         {
-            // 全てのWaterオブジェクトのスケールをリセット
-            GameObject[] waterObjects = GameObject.FindGameObjectsWithTag("Water");
-            if (waterObjects.Length == 0)
-            {
-                // タグがない場合は、名前で検索
-                waterObjects = GameObject.FindObjectsOfType<GameObject>();
-                waterObjects = System.Array.FindAll(waterObjects, obj => obj.name.Contains("Water") && obj.GetComponent<Rigidbody2D>() != null);
-            }
-
-            foreach (GameObject waterObj in waterObjects)
-            {
-                waterObj.transform.localScale = Vector3.one;
-            }
-            Debug.Log($"FoldUseCase: Reset {waterObjects.Length} water objects to initial scale");
+            // 全てのWaterオブジェクトを削除
+            _waterSpawner.ClearAllWaters();
 
             // 全てのCoinオブジェクトを削除
             GameObject[] coins = GameObject.FindGameObjectsWithTag("Coin");
@@ -111,8 +102,8 @@ namespace App.Vcontainer.UseCase.RunTime
         /// </summary>
         private async UniTask RespawnWater()
         {
-            // 水のスケールは既にClearGameObjects()でリセット済み
-            // 必要に応じて追加の初期化処理をここに記述
+            // WaterSpawnerで新しいWaterを生成
+            _waterSpawner.SpawnWaters();
 
             Debug.Log("FoldUseCase: Water respawned");
             await UniTask.Yield();

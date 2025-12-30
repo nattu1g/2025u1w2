@@ -2,7 +2,7 @@ using Alchemy.Inspector;
 using App.SOs;
 using UnityEngine;
 
-namespace App.Features
+namespace App.Features.Assembly
 {
     /// <summary>
     /// 試合の可視化に必要なコンポーネントをアセンブルするクラス
@@ -10,23 +10,17 @@ namespace App.Features
     /// </summary>
     public class GlobalAssetAssembly : MonoBehaviour
     {
-        [Header("Water Tank Game")]
-        [LabelText("コインPrefab")]
-        [SerializeField] private GameObject _coinPrefab;
+        [Header("Coin")]
+        public GameObject CoinPrefab;
 
         [Header("Coin Definitions")]
-        [LabelText("通常コイン")]
-        [SerializeField] private CoinDefinition _normalCoinDef;
+        public CoinDefinition NormalCoinDefinition;
+        public CoinDefinition DenseCoinDefinition;
+        public CoinDefinition CoolingCoinDefinition;
 
-        [LabelText("高密度コイン")]
-        [SerializeField] private CoinDefinition _denseCoinDef;
-
-        [LabelText("冷却コイン")]
-        [SerializeField] private CoinDefinition _coolingCoinDef;
-
-        public GameObject CoinPrefab => _coinPrefab;
-        public CoinDefinition NormalCoinDef => _normalCoinDef;
-        public CoinDefinition DenseCoinDef => _denseCoinDef;
-        public CoinDefinition CoolingCoinDef => _coolingCoinDef;
+        [Header("Water Prefabs")]
+        public GameObject CircleWaterPrefab;   // 丸い水
+        public GameObject EllipseWaterPrefab;  // 楕円の水
+        public GameObject SquareWaterPrefab;   // 四角い水
     }
 }

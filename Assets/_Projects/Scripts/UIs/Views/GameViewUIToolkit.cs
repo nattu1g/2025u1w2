@@ -69,7 +69,12 @@ namespace App.UIs.Views
         /// </summary>
         public void SetFoldButtonEnabled(bool enabled)
         {
-            FoldButton?.SetEnabled(enabled);
+            if (FoldButton == null) return;
+
+            FoldButton.SetEnabled(enabled);
+
+            // 視覚的なフィードバック: 無効時は透明度を下げる
+            FoldButton.style.opacity = enabled ? 1.0f : 0.5f;
         }
 
         public void Dispose()

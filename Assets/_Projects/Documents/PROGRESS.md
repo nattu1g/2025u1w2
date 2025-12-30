@@ -632,3 +632,83 @@ feat: フォールド（利確）システムの実装
 - GameStateEntityにフォールド回数と膨張回数を追加
 - VContainer統合とPrefab対応設計
 ```
+
+---
+
+## 2025-12-31: Water Prefab生成システムの実装
+
+### 実装内容
+
+WaterオブジェクトをPrefab化し、ゲーム開始時とフォールド後にランダムに生成するシステムを実装しました。
+
+#### 1. Water Prefab生成システム
+
+**新規作成ファイル:**
+- `WaterSpawner.cs`: Waterのランダム生成・削除を管理
+  - 3種類のWater Prefab（CircleWater、EllipseWater、SquareWater）をランダムに生成
+  - 生成数: CircleWater 20～45個、EllipseWater/SquareWater 各1～2個
+  - 生成位置: X座標 -2.5 ～ 2.5（水槽内）
+  - 最小間隔: CircleWater 0.8、EllipseWater/SquareWater 1.5
+  - 重複回避: 100回試行して有効な位置を探す
+
+**GameConstants.cs拡張:**
+- Water生成数の設定を追加
+- Water生成間隔の設定を追加
+- Water生成範囲の設定を追加
+
+**GlobalAssetAssembly.cs拡張:**
+- Water Prefabのフィールドを追加（CircleWaterPrefab、EllipseWaterPrefab、SquareWaterPrefab）
+
+#### 2. FoldUseCase修正
+
+**変更内容:**
+- `ClearGameObjects()`: Waterのスケールリセット → **Waterを完全に削除**に変更
+- `RespawnWater()`: WaterSpawnerで新しいWaterを生成
+
+#### 3. VContainer統合
+
+**MainLifeTimeScope.cs:**
+- `WaterSpawner`をSingletonとして登録
+- `FoldUseCase`に`WaterSpawner`を注入
+
+**GamePresenterUIToolkit.cs:**
+- `WaterSpawner`を注入
+- `Start()`でWaterを初期生成
+- フォールド後にボタンを無効化（視覚的フィードバック追加）
+
+#### 4. WaterLevelChecker設計変更
+
+**変更前:** 各WaterオブジェクトのWaterTriggerにアタッチ
+
+**変更後:** シーンに1つだけ配置し、タグ検索で全てのWaterを監視
+
+#### 5. UI改善
+
+**フォールドボタンの視覚的フィードバック:**
+- 無効時: 透明度0.5（半透明でグレーアウト）
+- 有効時: 透明度1.0（完全に表示）
+
+**オプション画面のレイアウト調整:**
+- 背景: 150%サイズで画面外までカバー
+- コンテンツ: 左上寄り（left: 25%, top: 0%）に配置
+
+#### 6. デバッグログ削減
+
+**WaterExpansion.cs:**
+- 不要なDebug.Logを全て削除
+- エラーと警告のみ残す
+
+### コミットメッセージ
+
+```
+feat: Water Prefab生成システムの実装
+
+- WaterSpawner.cs作成（ランダム生成・削除機能）
+- GameConstants.csにWater生成設定を追加
+- GlobalAssetAssembly.csにWater Prefabフィールドを追加
+- FoldUseCase.csでWaterを削除・再生成
+- WaterLevelCheckerを独立オブジェクトに変更
+- フォールドボタンの視覚的フィードバック追加
+- オプション画面のレイアウト調整
+- WaterExpansion.csのデバッグログ削減
+```
