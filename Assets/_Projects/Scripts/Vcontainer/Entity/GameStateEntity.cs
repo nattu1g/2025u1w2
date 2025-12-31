@@ -100,6 +100,7 @@ namespace App.Vcontainer.Entity
             _isGameOver.Value = false;
             _foldCount.Value = 0;
             _expansionCount = 0;
+            _pendingPoints.Value = 0;
             Debug.Log("GameStateEntity: Reset");
         }
 

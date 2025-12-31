@@ -3,11 +3,14 @@
     "rootNamespace": "App.Features",
     "references": [
         "App.SOs",
+        "App.Settings",
+        "App.Events",
         "Alchemy",
         "LitMotion",
-        "Unity.TextMeshPro",
         "LitMotion.Extensions",
-        "App.Settings"
+        "Unity.TextMeshPro",
+        "MessagePipe",
+        "VContainer"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

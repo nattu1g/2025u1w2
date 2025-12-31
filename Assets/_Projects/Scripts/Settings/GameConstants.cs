@@ -39,17 +39,17 @@ namespace App.Settings
         /// <summary>
         /// CircleWater（丸い水）の最小生成数
         /// </summary>
-        public const int MinCircleWaterCount = 20;
+        public const int MinCircleWaterCount = 70;
 
         /// <summary>
         /// CircleWater（丸い水）の最大生成数
         /// </summary>
-        public const int MaxCircleWaterCount = 45;
+        public const int MaxCircleWaterCount = 90;
 
         /// <summary>
         /// EllipseWater（楕円の水）の最小生成数
         /// </summary>
-        public const int MinEllipseWaterCount = 1;
+        public const int MinEllipseWaterCount = 0;
 
         /// <summary>
         /// EllipseWater（楕円の水）の最大生成数
@@ -59,7 +59,7 @@ namespace App.Settings
         /// <summary>
         /// SquareWater（四角い水）の最小生成数
         /// </summary>
-        public const int MinSquareWaterCount = 1;
+        public const int MinSquareWaterCount = 0;
 
         /// <summary>
         /// SquareWater（四角い水）の最大生成数

@@ -1,6 +1,10 @@
 using System;
-using App.Features;
+using System.Collections.Generic;
+using App.Features.Assembly;
+using App.Features.WaterTank.Coin;
 using App.Features.WaterTank.Water;
+using App.Features.WaterTank.Baseline;
+using App.Settings;
 using App.SOs;
 using App.UIs.Core;
 using App.UIs.Views;
@@ -10,9 +14,7 @@ using Common.Vcontainer.Handler;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
-using System.Collections.Generic;
 using VContainer.Unity;
-using App.Features.Assembly;
 
 namespace App.Vcontainer.Presenter
 {
@@ -29,6 +31,7 @@ namespace App.Vcontainer.Presenter
         private readonly UIToolkitButtonHandler _buttonHandler;
         private readonly GlobalAssetAssembly _assetAssembly;
         private readonly WaterSpawner _waterSpawner;
+        private readonly BaselineDisplay _baselineDisplay;
         private readonly CompositeDisposable _disposables = new();
 
         private GameViewUIToolkit _gameView;
@@ -53,7 +56,8 @@ namespace App.Vcontainer.Presenter
             WaterLevelChecker waterLevelChecker,
             UIToolkitButtonHandler buttonHandler,
             GlobalAssetAssembly assetAssembly,
-            WaterSpawner waterSpawner)
+            WaterSpawner waterSpawner,
+            BaselineDisplay baselineDisplay)
         {
             _uiToolkitCanvas = uiToolkitCanvas;
             _gameState = gameState;
@@ -63,6 +67,7 @@ namespace App.Vcontainer.Presenter
             _buttonHandler = buttonHandler;
             _assetAssembly = assetAssembly;
             _waterSpawner = waterSpawner;
+            _baselineDisplay = baselineDisplay;
         }
 
         public void Start()
@@ -89,6 +94,7 @@ namespace App.Vcontainer.Presenter
                 .Subscribe(pendingPoints => _gameView.SetPendingPoints(pendingPoints))
                 .AddTo(_disposables);
 
+            // GameStateEntity.IsGameOverを購読
             _gameState.IsGameOver
                 .Subscribe(isGameOver =>
                 {
@@ -96,6 +102,12 @@ namespace App.Vcontainer.Presenter
                     {
                         _gameView.SetButtonsEnabled(false);
                         Debug.Log("Game Over! Buttons disabled.");
+                    }
+                    else
+                    {
+                        // ゲームオーバーが解除された時（リトライ時）にボタンを再有効化
+                        _gameView.SetButtonsEnabled(true);
+                        Debug.Log("Game restarted! Buttons enabled.");
                     }
                 })
                 .AddTo(_disposables);
@@ -129,6 +141,10 @@ namespace App.Vcontainer.Presenter
                 .Subscribe(isAboveBaseline =>
                 {
                     _gameView.SetFoldButtonEnabled(isAboveBaseline);
+
+                    // 基準線の倍率表示を更新
+                    _baselineDisplay.UpdateMultiplier(isAboveBaseline, _gameState.FoldCount.CurrentValue);
+
                     Debug.Log($"GamePresenterUIToolkit: Fold button enabled = {isAboveBaseline}");
                 })
                 .AddTo(_disposables);
@@ -140,9 +156,6 @@ namespace App.Vcontainer.Presenter
                 _gameState.UpdatePendingPoints(_gameState.FoldCount.CurrentValue);
                 Debug.Log($"GamePresenterUIToolkit: Water expanded! Total expansions: {_gameState.ExpansionCount}, Pending points: {_gameState.PendingPoints.CurrentValue}");
             };
-
-            // 初期ポイントを設定（デバッグ用）
-            _gameState.AddPoints(100);
 
             // Waterを初期生成
             _waterSpawner.SpawnWaters();
@@ -272,21 +285,27 @@ namespace App.Vcontainer.Presenter
                 Debug.LogWarning("Creating dummy CoinDefinitions as fallback...");
                 GameObject coinPrefab = _assetAssembly.CoinPrefab;
 
+#if UNITY_EDITOR
                 if (_normalCoinDef == null)
                 {
                     _normalCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
                     _normalCoinDef.InitializeForDebug("通常コイン", 10, 0.1f, coinPrefab);
                 }
+#endif
+#if UNITY_EDITOR
                 if (_denseCoinDef == null)
                 {
                     _denseCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
                     _denseCoinDef.InitializeForDebug("高密度コイン", 50, 0.02f, coinPrefab);
                 }
+#endif
+#if UNITY_EDITOR
                 if (_coolingCoinDef == null)
                 {
                     _coolingCoinDef = ScriptableObject.CreateInstance<CoinDefinition>();
                     _coolingCoinDef.InitializeForDebug("冷却コイン", 100, -0.05f, coinPrefab);
                 }
+#endif
             }
             else
             {

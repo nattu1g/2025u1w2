@@ -20,6 +20,6 @@
         </ui:VisualElement>
         
         <!-- 右下: フォールドボタン -->
-        <ui:Button name="fold-button" text="フォールド" class="fold-button"/>
+        <ui:Button name="fold-button" text="ポイント確定" class="fold-button"/>
     </ui:VisualElement>
 </ui:UXML>

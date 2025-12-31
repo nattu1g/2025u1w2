@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="../USS/TitleView.uss"/>
+    
+    <!-- タイトル画面（初期状態は表示） -->
+    <ui:VisualElement name="title-ui-base" class="title-view">
+        <ui:VisualElement name="title-ui-background" class="ui-background"/>
+        <ui:VisualElement class="title-content-container">
+            <!-- タイトル -->
+            <ui:Label text="WATER TANK GAME" class="title-text"/>
+            
+            <!-- ゲーム説明 -->
+            <ui:VisualElement class="description-container">
+                <ui:Label text="遊び方" class="description-title"/>
+                <ui:Label text="• コインを落とすと水が膨張し、ポイントがPendingされます" class="description-item"/>
+                <ui:Label text="• 基準線を越えると、ポイント確定ボタンが押せるようになります" class="description-item"/>
+                <ui:Label text="• ポイント確定ボタンを押すと、コインと水は消えてポイントを獲得できます" class="description-item"/>
+                <ui:Label text="• 水槽の外に水をこぼすと、ゲームオーバーです" class="description-item"/>
+            </ui:VisualElement>
+            
+            <!-- はじめるボタン -->
+            <ui:Button name="start-button" text="はじめる" class="start-button"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

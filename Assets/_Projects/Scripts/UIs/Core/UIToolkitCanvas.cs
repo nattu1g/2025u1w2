@@ -23,6 +23,12 @@ namespace App.UIs.Core
         private GameViewUIToolkit _gameView;
         public GameViewUIToolkit GameView => _gameView;
 
+        private GameOverViewUIToolkit _gameOverView;
+        public GameOverViewUIToolkit GameOverView => _gameOverView;
+
+        private TitleViewUIToolkit _titleView;
+        public TitleViewUIToolkit TitleView => _titleView;
+
         private void Awake()
         {
             if (UiDocument == null)
@@ -48,12 +54,24 @@ namespace App.UIs.Core
             _gameView = new GameViewUIToolkit();
             _gameView.Initialize(_root);
             RegisterView(_gameView);
+
+            // GameOverViewを初期化
+            _gameOverView = new GameOverViewUIToolkit();
+            _gameOverView.Initialize(_root);
+            RegisterView(_gameOverView);
+
+            // TitleViewを初期化
+            _titleView = new TitleViewUIToolkit();
+            _titleView.Initialize(_root);
+            RegisterView(_titleView);
         }
 
         private void OnDestroy()
         {
             _optionView?.Dispose();
             _gameView?.Dispose();
+            _gameOverView?.Dispose();
+            _titleView?.Dispose();
         }
 
         /// <summary>

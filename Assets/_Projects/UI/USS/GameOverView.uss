@@ -1,0 +1,98 @@
+/* ゲームオーバー画面全体 */
+.gameover-view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 背景 - 150%サイズで画面外までカバー */
+.gameover-view .ui-background {
+    position: absolute;
+    left: -25%;
+    top: -25%;
+    width: 150%;
+    height: 150%;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* コンテンツコンテナ */
+.gameover-content-container {
+    width: 600px;
+    padding: 40px;
+    background-color: rgba(40, 40, 40, 0.95);
+    border-radius: 20px;
+    border-width: 3px;
+    border-color: rgb(200, 50, 50);
+    align-items: center;
+}
+
+/* タイトル */
+.gameover-title {
+    font-size: 60px;
+    color: rgb(255, 80, 80);
+    -unity-font-style: bold;
+    margin-bottom: 30px;
+    -unity-text-align: middle-center;
+}
+
+/* 最終スコア */
+.final-score-label {
+    font-size: 36px;
+    color: rgb(255, 255, 255);
+    margin-bottom: 40px;
+    -unity-text-align: middle-center;
+}
+
+/* ボタンコンテナ */
+.gameover-button-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ボタン共通スタイル */
+.gameover-button {
+    width: 200px;
+    height: 60px;
+    margin: 10px;
+    font-size: 24px;
+    border-radius: 10px;
+    border-width: 2px;
+    transition-duration: 0.2s;
+}
+
+/* リトライボタン */
+.retry-button {
+    background-color: rgb(80, 150, 255);
+    border-color: rgb(100, 170, 255);
+    color: white;
+}
+
+.retry-button:hover {
+    background-color: rgb(100, 170, 255);
+}
+
+.retry-button:active {
+    background-color: rgb(60, 130, 235);
+}
+
+/* タイトルボタン */
+.title-button {
+    background-color: rgb(120, 120, 120);
+    border-color: rgb(140, 140, 140);
+    color: white;
+}
+
+.title-button:hover {
+    background-color: rgb(140, 140, 140);
+}
+
+.title-button:active {
+    background-color: rgb(100, 100, 100);
+}

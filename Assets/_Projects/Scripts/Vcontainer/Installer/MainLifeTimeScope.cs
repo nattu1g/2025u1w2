@@ -40,7 +40,10 @@ namespace Scripts.Vcontainer.Installer
         protected override void Configure(IContainerBuilder builder)
         {
             // PubSub
-            builder.RegisterMessagePipe();
+            var options = builder.RegisterMessagePipe();
+
+            // GameOverEventの登録
+            builder.RegisterMessageBroker<App.Events.GameOverEvent>(options);
 
             // Handler (汎用的なものや、未整理のもの)
             // uGUI版（段階的移行中）
@@ -70,6 +73,7 @@ namespace Scripts.Vcontainer.Installer
             // UseCase - ゲームロジック
             builder.Register<CoinDropUseCase>(Lifetime.Singleton);
             builder.Register<FoldUseCase>(Lifetime.Singleton);
+            builder.Register<GameOverUseCase>(Lifetime.Singleton);
             builder.Register<WaterSpawner>(Lifetime.Singleton);
 
             // Presenter
@@ -77,6 +81,10 @@ namespace Scripts.Vcontainer.Installer
                 .As<IStartable>();
             builder.Register<GamePresenterUIToolkit>(Lifetime.Singleton)
                 .AsImplementedInterfaces(); // IStartable と ITickable の両方を登録
+            builder.Register<GameOverPresenterUIToolkit>(Lifetime.Singleton)
+                .AsImplementedInterfaces(); // IStartable を登録
+            builder.Register<TitlePresenterUIToolkit>(Lifetime.Singleton)
+                .AsImplementedInterfaces();
 
             // ヒエラルキー上のコンポーネント
             builder.RegisterComponentInHierarchy<SaveManager>();
@@ -84,6 +92,7 @@ namespace Scripts.Vcontainer.Installer
             builder.RegisterComponentInHierarchy<GlobalAssetAssembly>();
             builder.RegisterComponentInHierarchy<BaselineDisplay>();
             builder.RegisterComponentInHierarchy<WaterLevelChecker>();
+            builder.RegisterComponentInHierarchy<App.Features.WaterTank.Tank.TankOverflowDetector>();
 
             // UI Toolkit版のCanvasを登録
             builder.RegisterComponentInHierarchy<UIToolkitCanvas>();

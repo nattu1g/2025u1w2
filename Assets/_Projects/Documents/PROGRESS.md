@@ -712,3 +712,186 @@ feat: Water Prefab生成システムの実装
 - オプション画面のレイアウト調整
 - WaterExpansion.csのデバッグログ削減
 ```
+
+---
+
+## 2025-12-31: ゲームオーバーシステムとタイトル画面の実装
+
+### ゲームオーバーシステムの実装
+
+水槽から水がこぼれた時のゲームオーバー処理を完全実装しました。
+
+#### 1. イベントシステム
+
+**新規作成ファイル:**
+- `GameOverEvent.cs`: MessagePipe用のゲームオーバーイベント
+  - `FinalScore`プロパティを含む
+
+**TankOverflowDetector.cs修正:**
+- UnityEventからMessagePipeに変更
+- `IPublisher<GameOverEvent>`を注入
+- 水検知時に`GameOverEvent`を発行
+
+#### 2. ゲームオーバー処理
+
+**新規作成ファイル:**
+- `GameOverUseCase.cs`: ゲームオーバーのビジネスロジック
+  - `GameOverEvent`を購読
+  - `GameStateEntity.IsGameOver`を更新
+  - `RetryGame()`メソッドでゲームをリセット
+
+**GameStateEntity拡張:**
+- `IsGameOver`プロパティ（ReactiveProperty）を追加
+- `Reset()`メソッドで全ての状態をリセット
+
+#### 3. ゲームオーバーUI
+
+**新規作成ファイル:**
+- `GameOverView.uxml` / `GameOverView.uss`: ゲームオーバー画面のUI定義
+  - タイトル: "GAME OVER"
+  - 最終スコア表示
+  - リトライボタン
+  - 150%サイズの黒背景
+
+**GameOverViewUIToolkit.cs:**
+- ゲームオーバー画面のView実装
+- リトライボタンへの参照を提供
+
+**GameOverPresenterUIToolkit.cs:**
+- ゲームオーバー画面のPresenter実装
+- `GameStateEntity.IsGameOver`を購読
+- ゲームオーバー時に画面を表示
+- リトライボタンクリック時の処理:
+  - 全てのCoinとWaterを削除
+  - `GameStateEntity.Reset()`を呼び出し
+  - 基準線をリセット
+  - 新しいWaterを生成
+  - ゲームオーバー画面を非表示
+
+#### 4. VContainer統合
+
+**MainLifeTimeScope.cs:**
+- `GameOverEvent`をMessagePipeに登録
+- `GameOverUseCase`を登録
+- `GameOverPresenterUIToolkit`を登録
+- `TankOverflowDetector`をヒエラルキーから登録
+
+**UIToolkitCanvas.cs:**
+- `GameOverViewUIToolkit`を初期化・登録
+
+#### 5. リトライ後のボタン再有効化
+
+**GamePresenterUIToolkit.cs修正:**
+- `IsGameOver`を購読
+- ゲームオーバーが解除された時（リトライ時）にコインボタンを再有効化
+
+### タイトル画面の実装
+
+ゲーム開始時に表示されるタイトル画面を実装しました。
+
+#### 1. タイトル画面UI
+
+**新規作成ファイル:**
+- `TitleView.uxml` / `TitleView.uss`: タイトル画面のUI定義
+  - タイトル: "WATER TANK GAME"
+  - STARTボタン（中央配置）
+  - 150%サイズの黒背景
+
+**TitleViewUIToolkit.cs:**
+- タイトル画面のView実装
+- STARTボタンへの参照を提供
+
+**TitlePresenterUIToolkit.cs:**
+- タイトル画面のPresenter実装
+- ゲーム開始時にタイトル画面を表示
+- STARTボタンクリックでタイトル画面を非表示
+
+#### 2. VContainer統合
+
+**MainLifeTimeScope.cs:**
+- `TitlePresenterUIToolkit`を`IStartable`として登録
+
+**UIToolkitCanvas.cs:**
+- `TitleViewUIToolkit`を初期化・登録
+
+#### 3. UI要素の重なり順
+
+タイトル画面をGameOverViewの後、設定ボタンの前に配置することで、正しい重なり順を実現：
+
+1. GameView（一番下）
+2. GameOverView
+3. TitleView
+4. 設定ボタン
+5. OptionView（最前面）
+
+### UI要素の英語化
+
+ゲーム全体のUI要素を英語に統一しました。
+
+#### 1. コインボタンの変更
+
+**Main.uxml修正:**
+- 高密度コインと冷却コインのボタンを削除
+- 通常コインボタンを「DROP COIN」に変更
+- ボタンを中央配置（`justify-content: center`）
+
+#### 2. ポイント確定ボタンの英語化
+
+**Main.uxml修正:**
+- 「ポイント確定」→「CONFIRM POINTS」に変更
+
+#### 3. オプション画面の英語化
+
+**Main.uxml修正:**
+- 「オプション」→「OPTIONS」
+- 「BGM音量:」→「BGM Volume:」
+- 「SE音量:」→「SE Volume:」
+- 「閉じる」→「CLOSE」
+
+#### 4. 基準線の英語化
+
+**BaselineDisplay.cs修正:**
+- 「基準線」→「BASE LINE」に変更
+- 表示例: "BASE LINE (×1.5)"
+
+### 基準線ラベルの表示改善
+
+基準線にポイント倍率を表示する機能を実装しました。
+
+#### 1. BaselineDisplay拡張
+
+**追加機能:**
+- `TextMeshProUGUI`フィールドを追加
+- `UpdateMultiplier()`メソッドで倍率を更新
+- 基準線以下: "BASE LINE (×1.0)"
+- 基準線以上: "BASE LINE (×1.5)" など
+
+#### 2. GamePresenterUIToolkit統合
+
+**変更内容:**
+- `BaselineDisplay`を注入
+- `WaterLevelChecker.OnBaselineReachedAsObservable`を購読
+- 基準線到達時に`UpdateMultiplier()`を呼び出し
+
+### コンパイルエラー修正
+
+`CoinDefinition.InitializeForDebug`がランタイムで使用できない問題を修正しました。
+
+**GamePresenterUIToolkit.cs修正:**
+- `InitializeForDebug`呼び出しを`#if UNITY_EDITOR`で囲む
+- エディタでのみダミーのCoinDefinitionを作成
+- ランタイムビルドではエラーログを出力
+
+### コミットメッセージ
+
+```
+feat: ゲームオーバーシステムとタイトル画面の実装、UI英語化
+
+- ゲームオーバーシステム（MessagePipe、GameOverUseCase、GameOverView）
+- タイトル画面（TitleView、TitlePresenter）
+- UI要素の英語化（コインボタン、ポイント確定、オプション、基準線）
+- コインボタンを1つに削減して中央配置
+- 基準線ラベルにポイント倍率を表示
+- リトライ後のボタン再有効化
+- CoinDefinition.InitializeForDebugのコンパイルエラー修正
+```

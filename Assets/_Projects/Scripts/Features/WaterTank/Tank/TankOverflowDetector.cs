@@ -1,5 +1,7 @@
+using App.Events;
+using MessagePipe;
 using UnityEngine;
-using UnityEngine.Events;
+using VContainer;
 
 namespace App.Features.WaterTank.Tank
 {
@@ -14,8 +16,13 @@ namespace App.Features.WaterTank.Tank
         [Tooltip("検知対象のタグ")]
         [SerializeField] private string _waterTag = "Water";
 
-        [Header("イベント")]
-        public UnityEvent OnOverflow;
+        private IPublisher<GameOverEvent> _gameOverPublisher;
+
+        [Inject]
+        public void Construct(IPublisher<GameOverEvent> gameOverPublisher)
+        {
+            _gameOverPublisher = gameOverPublisher;
+        }
 
         private void Awake()
         {
@@ -33,7 +40,16 @@ namespace App.Features.WaterTank.Tank
             if (other.CompareTag(_waterTag))
             {
                 Debug.Log("水がこぼれました！ゲームオーバー");
-                OnOverflow?.Invoke();
+
+                // MessagePipeでゲームオーバーイベントを発行
+                if (_gameOverPublisher != null)
+                {
+                    _gameOverPublisher.Publish(new GameOverEvent(0)); // スコアは後で設定
+                }
+                else
+                {
+                    Debug.LogError("TankOverflowDetector: GameOverPublisher is null. Make sure VContainer is properly configured.");
+                }
             }
         }
     }

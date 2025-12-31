@@ -13,6 +13,7 @@
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Common.Editor.csproj" />
   <Project Path="App.Settings.csproj" />
+  <Project Path="App.Events.csproj" />
   <Project Path="Common.Events.csproj" />
   <Project Path="App.Editor.csproj" />
   <Project Path="App.SOs.csproj" />
